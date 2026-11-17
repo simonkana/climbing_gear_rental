@@ -149,6 +149,75 @@ class ReservationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  # edit and update
+
+  test "show links to edit only while the reservation is editable" do
+    get reservation_path(reservations(:upcoming))
+    assert_select "a[href='#{edit_reservation_path(reservations(:upcoming))}']", text: "Edit"
+
+    get reservation_path(reservations(:finished))
+    assert_select "a[href='#{edit_reservation_path(reservations(:finished))}']", count: 0
+  end
+
+  test "edit form is prefilled in Prague time" do
+    get edit_reservation_path(reservations(:upcoming))
+
+    assert_response :success
+    assert_select "form[action='#{reservation_path(reservations(:upcoming))}']"
+    assert_select "#reservation_start_date[value='2026-12-02T10:00']" # 09:00 UTC
+    assert_select "#reservation_start_date[disabled]", count: 0
+  end
+
+  test "update changes the reservation through the booking service" do
+    reservation = reservations(:upcoming)
+
+    patch reservation_path(reservation), params: { reservation: { end_date: "2026-12-02T15:00" } }
+
+    assert_redirected_to reservation_path(reservation)
+    assert_equal Time.utc(2026, 12, 2, 14, 0), reservation.reload.end_date
+    follow_redirect!
+    assert_select ".flash-notice", text: "Reservation was updated."
+  end
+
+  test "update over capacity re-renders the form and keeps the stored times" do
+    crashpad = equipment(:crashpad) # capacity 1, turnaround 60 min
+    post equipment_reservations_path(crashpad), params: booking_params
+    first = Reservation.order(:id).last
+    post equipment_reservations_path(crashpad),
+      params: booking_params(start_date: "2026-12-05T14:00", end_date: "2026-12-05T16:00")
+
+    patch reservation_path(first), params: { reservation: { end_date: "2026-12-05T13:30" } }
+
+    assert_response :unprocessable_content
+    assert_select ".form-errors[role='alert']", text: /all 1 units are taken/
+    assert_equal Time.utc(2026, 12, 5, 11, 0), first.reload.end_date
+  end
+
+  test "in-progress reservation can be extended and its start field is disabled" do
+    reservation = reservations(:in_progress)
+
+    get edit_reservation_path(reservation)
+    assert_select "#reservation_start_date[disabled]"
+
+    patch reservation_path(reservation), params: { reservation: { end_date: "2026-12-01T15:00" } }
+    assert_redirected_to reservation_path(reservation)
+    assert_equal Time.utc(2026, 12, 1, 14, 0), reservation.reload.end_date
+  end
+
+  test "finished and cancelled reservations cannot be edited" do
+    %i[finished cancelled].each do |name|
+      reservation = reservations(name)
+
+      get edit_reservation_path(reservation)
+      assert_redirected_to reservation_path(reservation)
+      assert_equal "This reservation can no longer be changed.", flash[:alert]
+
+      patch reservation_path(reservation), params: { reservation: { customer_name: "Changed" } }
+      assert_redirected_to reservation_path(reservation)
+      assert_not_equal "Changed", reservation.reload.customer_name
+    end
+  end
+
   test "equipment page links its reservations" do
     get equipment_path(equipment(:rope))
 

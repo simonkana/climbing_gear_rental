@@ -1,0 +1,11 @@
+<% content_for :title, "Edit reservation · Climbing Gear Rental" %>
+
+<h1>Edit reservation</h1>
+<p><%= link_to @reservation.equipment.name, equipment_path(@reservation.equipment) %></p>
+<% if @reservation.started? %>
+  <p class="hint">This reservation has already started, so only its end can be changed.</p>
+<% end %>
+
+<%= render "form", reservation: @reservation, url: reservation_path(@reservation), submit_label: "Save changes" %>
+
+<p><%= link_to "Back to reservation", reservation_path(@reservation) %></p>

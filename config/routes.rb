@@ -14,5 +14,5 @@ Rails.application.routes.draw do
   resources :equipment, only: %i[index show new create] do
     resources :reservations, only: %i[new create]
   end
-  resources :reservations, only: %i[index show]
+  resources :reservations, only: %i[index show edit update]
 end

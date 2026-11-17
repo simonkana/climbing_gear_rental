@@ -1,6 +1,7 @@
 # Every create/update goes through ReservationBooking (GUARDRAILS #1).
 class ReservationsController < ApplicationController
-  before_action :set_reservation, only: %i[show]
+  before_action :set_reservation, only: %i[show edit update]
+  before_action :require_editable, only: %i[edit update]
   before_action :set_equipment, only: %i[new create]
 
   def index
@@ -29,7 +30,24 @@ class ReservationsController < ApplicationController
     end
   end
 
+  def edit
+  end
+
+  def update
+    @reservation.assign_attributes(reservation_params)
+
+    if ReservationBooking.new(@reservation).call
+      redirect_to @reservation, notice: "Reservation was updated."
+    else
+      render :edit, status: :unprocessable_content
+    end
+  end
+
   private
+    def require_editable
+      redirect_to @reservation, alert: "This reservation can no longer be changed." unless @reservation.editable?
+    end
+
     def set_reservation
       @reservation = Reservation.find_by!(public_id: params.expect(:id))
     end

@@ -35,3 +35,9 @@
     <% end %>
   </dd>
 </dl>
+
+<% if @reservation.editable? %>
+  <div class="actions">
+    <%= link_to "Edit", edit_reservation_path(@reservation), class: "button" %>
+  </div>
+<% end %>
