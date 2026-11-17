@@ -1,0 +1,45 @@
+<%# locals: (reservation:, url:, submit_label:) %>
+<%= form_with model: reservation, url: url do |form| %>
+  <%= render "shared/form_errors", form: form %>
+
+  <div class="field">
+    <%= form.label :customer_name, "Name" %>
+    <%= form.text_field :customer_name, required: true, maxlength: 100, autocomplete: "name", **field_error_attributes(form, :customer_name) %>
+    <%= field_error_message(form, :customer_name) %>
+  </div>
+
+  <div class="field">
+    <%= form.label :customer_email, "Email" %>
+    <%= form.email_field :customer_email, required: true, maxlength: 255, autocomplete: "email", **field_error_attributes(form, :customer_email) %>
+    <%= field_error_message(form, :customer_email) %>
+  </div>
+
+  <div class="field">
+    <%= form.label :customer_phone, "Phone (optional)" %>
+    <%= form.telephone_field :customer_phone, maxlength: 30, autocomplete: "tel", **field_error_attributes(form, :customer_phone) %>
+    <%= field_error_message(form, :customer_phone) %>
+  </div>
+
+  <p class="hint">
+    Times are in Prague time, in 15-minute steps. After each rental the unit is blocked for
+    <%= reservation.equipment.turnaround_minutes %> min (inspection and cleaning).
+  </p>
+
+  <div class="field">
+    <%= form.label :start_date, "From" %>
+    <%= form.datetime_local_field :start_date, required: true, step: 900, include_seconds: false,
+          disabled: reservation.started?, **field_error_attributes(form, :start_date) %>
+    <%= field_error_message(form, :start_date) %>
+  </div>
+
+  <div class="field">
+    <%= form.label :end_date, "To" %>
+    <%= form.datetime_local_field :end_date, required: true, step: 900, include_seconds: false,
+          **field_error_attributes(form, :end_date) %>
+    <%= field_error_message(form, :end_date) %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit submit_label %>
+  </div>
+<% end %>

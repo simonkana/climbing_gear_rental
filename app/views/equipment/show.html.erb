@@ -5,6 +5,8 @@
   <p><%= @equipment.description %></p>
 <% end %>
 
+<p><%= link_to "Book", new_equipment_reservation_path(@equipment), class: "button" %></p>
+
 <dl class="facts">
   <dt>Capacity</dt>
   <dd><%= pluralize(@equipment.capacity, "unit") %></dd>

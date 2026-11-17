@@ -1,0 +1,8 @@
+<% content_for :title, "Book #{@equipment.name} · Climbing Gear Rental" %>
+
+<h1>Book <%= @equipment.name %></h1>
+<p><%= pluralize(@equipment.capacity, "unit") %> available in total.</p>
+
+<%= render "form", reservation: @reservation, url: equipment_reservations_path(@equipment), submit_label: "Book" %>
+
+<p><%= link_to "Back to #{@equipment.name}", equipment_path(@equipment) %></p>
