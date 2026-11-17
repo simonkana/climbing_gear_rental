@@ -32,15 +32,17 @@ If something in the plan is wrong or ambiguous, stop and propose a plan edit ins
 
 ## Commands
 ```bash
-bin/rails test                     # all tests
+bin/rails test                     # all tests except system tests
 bin/rails test test/path_test.rb:42
+bin/rails test:system              # browser tests (headless Chrome, desktop + 390px phone)
+SCREENSHOTS=1 bin/rails test:system  # also saves full-page screenshots to tmp/screenshots
 bin/rubocop                        # style (rubocop-rails-omakase), -a for safe autocorrect
 bin/brakeman --no-pager            # security scan
 bin/ci                             # everything in config/ci.rb (setup, rubocop, audits, brakeman, tests, seeds)
 bin/rails db:migrate               # after adding a migration
 bin/rails db:setup                 # fresh DB with seeds (ask before db:drop)
 ```
-Checks before every proposed commit: `bin/rails test`, `bin/rubocop`, `bin/brakeman --no-pager` (or `bin/ci`).
+Checks before every proposed commit: `bin/rails test`, `bin/rubocop`, `bin/brakeman --no-pager` (or `bin/ci`). For any view or CSS change also `bin/rails test:system`.
 
 ## Conventions
 - Plain Rails first: models with validations, `enum`, concerns, resourceful routes, fixtures, framework helpers. No extra layers (form objects, presenters, decorators, query objects, base service classes) and no gems for things Rails already does. The only non-default patterns are `ReservationBooking` (locked transaction) and the PORO `CapacityTimeline`.

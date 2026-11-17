@@ -253,8 +253,11 @@ Separate file, `self.use_transactional_tests = false`, cleans up its own records
 - **Mutation check (manual, not committed):** temporarily remove the lock, run the test, confirm it fails, restore. Record the outcome in the README.
 - **Mutation check result (2026-11-17):** with `Equipment.lock.find` replaced by `Equipment.find`, both tests failed: 8 of 8 simultaneous bookings succeeded instead of 1 (capacity 1 → 8 active reservations; capacity 3 with 2 booked → 10). With the lock restored: exactly 1 success and 7 capacity errors in each test. Only the winning thread reaches the delay before the write; the others see its commit and fail fast, so each test takes ≈ 0.3 s.
 
+### 9.4a System tests (added with Phase 14)
+Capybara + Selenium (Rails default gems; Selenium Manager downloads Chrome for Testing if no Chrome is installed). `test/system/desktop_layout_test.rb` (1400px) and `mobile_layout_test.rb` (390px phone, emulated): no page scrolls sideways, mobile menu (open, Escape, focus return, navigation), header row, booking panel position, and a full book + cancel flow in the browser. `SCREENSHOTS=1` saves full-page screenshots for visual review.
+
 ### 9.5 Checks
-See `AGENTS.md` → Commands. `config/ci.rb` already has the system-test step commented out (no system tests planned); keep it that way.
+See `AGENTS.md` → Commands. `config/ci.rb` runs the system tests too (step enabled with Phase 14).
 
 ---
 
@@ -320,7 +323,7 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
 - [x] **Phase 13: Equipment images** → D17, §3.1
   - `feat: add optional image URL to equipment` (migration with CHECK, validation, form field, image/placeholder partial)
   - `chore: add Wikimedia Commons images to seeds` (URLs verified to load, licences credited in a seeds comment)
-- [ ] **Phase 14: UI refresh** → D18, §7
+- [x] **Phase 14: UI refresh** → D18, §7
   - `style: switch to a bold design with Figtree`
   - `style: show equipment as photo cards with availability gauge`
   - `style: add booking panel and status badges`
@@ -329,7 +332,7 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
 - [ ] **B1: Nearest available slot** → §4.5. `feat: suggest nearest available start time`
 - [ ] **B2: Category** → §3.4. `feat: add equipment categories with filtering`
 - [ ] **B3: Availability overview** on equipment show: free units per hour for the next 7 days (reuses `CapacityTimeline`). `feat: show equipment availability overview`
-- [ ] **B4: GitHub Actions**: adjust the generated `.github/workflows/ci.yml` (pin `mysql:8.4` image, drop the `system-test` job). `ci: pin MySQL 8.4 and drop system-test job`
+- [ ] **B4: GitHub Actions**: adjust the generated `.github/workflows/ci.yml` (pin `mysql:8.4` image; keep the `system-test` job, the app has system tests since Phase 14). `ci: pin MySQL 8.4 in GitHub Actions`
 
 ---
 
