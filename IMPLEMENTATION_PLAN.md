@@ -205,7 +205,7 @@ Claim for README: as the start moves later, a start can only become feasible whe
 
 ## 8. Seeds (`db/seeds.rb`)
 - Idempotent: clears reservations and equipment first (safe because it is dev data).
-- All times relative to "tomorrow" in Prague time so the data never expires.
+- All times relative to the day the seeds run (Prague time) so the data never expires. Scenarios are one week ahead, so a reviewer has several days to try them; past reservations are 1 and 7 days back.
 - Future reservations are created **through `ReservationBooking`** (seeds exercise the real logic; raise if a booking fails). Past reservations use `save(validate: false)` with a comment.
 - At the end, print a short guide to the console listing the scenarios below.
 - Must also pass `bin/rails db:seed:replant` in the test env (a `bin/ci` step).
@@ -215,9 +215,9 @@ Equipment: Rope 60 m (cap 3, turnaround 120), Harness M (cap 4), GriGri (cap 2),
 Scenarios:
 | # | Equipment | Setup | What to try |
 |---|-----------|-------|-------------|
-| S1 | Crashpad, cap 1 | tomorrow 10:00–18:00 | 18:30 start is rejected (buffer), 19:00 is accepted |
+| S1 | Crashpad, cap 1 | 10:00–18:00 on the scenario day (one week ahead) | 18:30 start is rejected (buffer), 19:00 is accepted |
 | S2 | GriGri, cap 2 | 09:00–17:00 and 13:00–20:00 | 15:00–16:00 rejected (full), 10:00–12:00 accepted |
-| S3 | Rope, cap 3 | three staggered bookings, 2 overlap at midday | nearly full: one more fits only in some windows |
+| S3 | Rope, cap 3, turnaround 2 h | 08:00–12:00, 10:00–14:00, 13:00–17:00 | nearly full (all 3 units taken 13:00–14:00): 12:00–15:00 rejected, 09:00–11:00 accepted |
 | S4 | Shoes EU 42, cap 2 | A 08:00–10:00, B 12:00–14:00 | 09:00–13:00 accepted (sweep line vs naive count, §4.2) |
 | S5 | Harness M | one cancelled booking in a window | cancelled booking does not block |
 | S6 | Helmet | past reservations | listed as past, not editable |
@@ -297,7 +297,7 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
   - `style: add base styles and layout`
   - `style: style equipment and reservation pages`
 
-- [ ] **Phase 10: Seeds** (20 min) → §8
+- [x] **Phase 10: Seeds** (20 min) → §8
   Verify with `bin/rails db:drop db:setup` (ask before dropping) and click through S1–S6.
   - `chore: add seed equipment`
   - `chore: add near-capacity seed scenarios`
