@@ -1,42 +1,191 @@
 /*
- * Components: tables, definition lists, buttons, forms, error summary.
+ * Components: buttons, forms, tables, detail lists, images.
  * Uses the tokens defined in application.css.
  */
 
-/* Tables: scroll horizontally on small screens instead of overflowing */
+/* Buttons: links styled as buttons, button_to forms and submit inputs */
+
+.button,
+input[type="submit"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem; /* 44px touch target */
+  padding: var(--space-2) var(--space-4);
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--rope-pink);
+  box-shadow: var(--shadow-sm);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+/* Lift on hover, sink on press: motion only answers the user's action. */
+.button:hover,
+input[type="submit"]:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--ink);
+}
+
+.button:active,
+input[type="submit"]:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+
+.button-secondary {
+  background: var(--paper);
+}
+
+.button-danger {
+  background: var(--paper);
+  border-color: var(--signal-red);
+  box-shadow: 3px 3px 0 var(--signal-red);
+  color: var(--signal-red);
+}
+
+.button-danger:hover {
+  box-shadow: 5px 5px 0 var(--signal-red);
+}
+
+.button_to {
+  display: inline;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block: var(--space-4);
+}
+
+/* Forms: one selector for every text-like control, so no type is missed */
+
+form {
+  max-width: 34rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-block-end: var(--space-4);
+}
+
+.field label {
+  font-weight: 700;
+}
+
+/* Rails wraps invalid fields in a div; keep the layout unchanged. */
+.field_with_errors {
+  display: contents;
+}
+
+input:not([type="hidden"], [type="submit"], [type="checkbox"], [type="radio"]),
+textarea {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+}
+
+input:not([type="hidden"], [type="submit"], [type="checkbox"], [type="radio"]):focus-visible,
+textarea:focus-visible {
+  box-shadow: 4px 4px 0 var(--rope-pink);
+}
+
+input:disabled {
+  background: var(--chalk);
+  color: var(--graphite);
+  cursor: not-allowed;
+}
+
+input::placeholder {
+  color: var(--graphite);
+}
+
+[aria-invalid="true"] {
+  border-color: var(--signal-red);
+  background: var(--red-tint);
+}
+
+.field-error {
+  color: var(--signal-red);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.hint {
+  color: var(--graphite);
+  font-size: 0.875rem;
+}
+
+/* Error summary at the top of a form */
+
+.form-errors {
+  margin-block-end: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--signal-red);
+  border-radius: var(--radius);
+  background: var(--red-tint);
+  box-shadow: 3px 3px 0 var(--signal-red);
+  color: var(--signal-red);
+  font-weight: 600;
+}
+
+.form-errors ul {
+  margin: 0;
+  padding-inline-start: var(--space-4);
+}
+
+.form-errors a {
+  color: inherit;
+}
+
+/* Tables: bordered block that scrolls sideways on small screens */
 
 .table-wrapper {
   overflow-x: auto;
   margin-block-end: var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+  border: var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.9375rem;
 }
 
 th,
 td {
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-3);
   text-align: start;
   white-space: nowrap;
-  border-block-end: 1px solid var(--color-border);
+  border-block-end: 1px solid var(--ink);
 }
 
 thead th {
-  background: var(--color-surface);
-  color: var(--color-muted);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
+  background: var(--chalk);
+  font-weight: 700;
+  border-block-end: var(--border);
 }
 
 tbody tr:last-child td {
   border-block-end: 0;
+}
+
+tbody tr:hover {
+  background: var(--chalk);
 }
 
 td.capacity,
@@ -54,12 +203,13 @@ td.free-now {
 }
 
 .facts dt {
-  color: var(--color-muted);
+  color: var(--graphite);
   font-size: 0.875rem;
 }
 
 .facts dd {
   margin-block-end: var(--space-2);
+  font-weight: 600;
 }
 
 @media (min-width: 48rem) {
@@ -72,139 +222,6 @@ td.free-now {
   }
 }
 
-.hint {
-  color: var(--color-muted);
-  font-size: 0.875rem;
-}
-
-/* Buttons: links styled as buttons, button_to forms and submit inputs */
-
-.button,
-input[type="submit"] {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 2.75rem;
-  /* 44px touch target */
-  padding: var(--space-2) var(--space-4);
-  border: 2px solid var(--color-accent);
-  border-radius: var(--radius);
-  background: var(--color-accent);
-  color: #ffffff;
-  font: inherit;
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.button:hover,
-input[type="submit"]:hover {
-  background: var(--color-accent-hover);
-  border-color: var(--color-accent-hover);
-  color: #ffffff;
-}
-
-.button-danger {
-  background: var(--color-bg);
-  border-color: var(--color-danger);
-  color: var(--color-danger);
-}
-
-.button-danger:hover {
-  background: var(--color-error-bg);
-  border-color: var(--color-danger);
-  color: var(--color-danger);
-}
-
-.button_to {
-  display: inline;
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-3);
-  margin-block: var(--space-4);
-}
-
-/* Forms */
-
-form {
-  max-width: 32rem;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  margin-block-end: var(--space-3);
-}
-
-.field label {
-  font-weight: 600;
-}
-
-/* Rails wraps invalid fields in a div; keep the layout unchanged. */
-.field_with_errors {
-  display: contents;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="tel"],
-input[type="number"],
-input[type="datetime-local"],
-textarea {
-  width: 100%;
-  min-height: 2.75rem;
-  padding: var(--space-2);
-  border: 1px solid var(--color-input-border);
-  border-radius: var(--radius);
-  background: var(--color-bg);
-  color: var(--color-text);
-  font: inherit;
-}
-
-input:disabled {
-  background: var(--color-surface);
-  color: var(--color-muted);
-}
-
-[aria-invalid="true"] {
-  border: 2px solid var(--color-danger);
-}
-
-.field-error {
-  color: var(--color-danger);
-  font-size: 0.875rem;
-}
-
-/* Error summary at the top of a form */
-
-.form-errors {
-  margin-block-end: var(--space-4);
-  padding: var(--space-3);
-  border: 2px solid var(--color-danger);
-  border-radius: var(--radius);
-  background: var(--color-error-bg);
-}
-
-.form-errors h2 {
-  margin: 0 0 var(--space-2);
-  font-size: 1rem;
-  color: var(--color-danger);
-}
-
-.form-errors ul {
-  margin: 0;
-  padding-inline-start: var(--space-4);
-}
-
-.form-errors a {
-  color: var(--color-text);
-}
-
 /* Collapsible past reservations */
 
 details {
@@ -213,19 +230,20 @@ details {
 
 summary {
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 700;
   margin-block-end: var(--space-3);
 }
 
-/* Equipment images (D17) */
+/* Equipment images (D17): fixed frame so the layout does not jump */
 
 .equipment-image {
   aspect-ratio: 4 / 3;
   max-width: 32rem;
   margin-block-end: var(--space-4);
   overflow: hidden;
-  border-radius: var(--radius);
-  background: var(--color-surface);
+  border: var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--chalk);
 }
 
 .equipment-image img {
@@ -239,16 +257,20 @@ summary {
   display: grid;
   place-items: center;
   height: 100%;
-  border: 1px dashed var(--color-border);
-  border-radius: inherit;
-  color: var(--color-muted);
+  padding: var(--space-2);
+  background:
+    repeating-linear-gradient(-45deg, transparent 0 10px, rgb(0 0 0 / 0.06) 10px 12px),
+    var(--chalk);
+  color: var(--graphite);
   font-size: 0.875rem;
+  font-weight: 600;
   text-align: center;
 }
 
 .thumbnail-cell .equipment-image {
   width: 4rem;
   margin: 0;
+  border-radius: var(--radius);
 }
 
 .thumbnail-cell .image-placeholder {

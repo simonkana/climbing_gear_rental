@@ -26,12 +26,28 @@
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <header class="site-header">
-      <%= link_to "Climbing Gear Rental", root_path, class: "site-logo" %>
-      <nav aria-label="Main">
-        <%= link_to "Equipment", equipment_index_path %>
-        <%= link_to "Reservations", reservations_path %>
-      </nav>
+    <header class="site-header" data-controller="nav-menu" data-action="keydown.esc@window->nav-menu#closeOnEscape">
+      <div class="site-header-inner">
+        <%= link_to root_path, class: "site-logo" do %>
+          <svg class="site-logo-mark" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false">
+            <path d="M2 27 12 9l5 8 4-6 9 16Z" fill="currentColor"/>
+            <path d="m12 9 2.6 4.3-2.6 1.7-2.6-1.7Z" fill="#fff"/>
+          </svg>
+          <span>Climbing Gear Rental</span>
+        <% end %>
+        <%# Shown by the nav-menu controller on small screens; without JS the links stay visible. %>
+        <button type="button" class="menu-toggle" hidden aria-expanded="false" aria-controls="main-nav"
+                data-nav-menu-target="button" data-action="nav-menu#toggle">
+          <span class="menu-toggle-icon" aria-hidden="true"></span>
+          Menu
+        </button>
+        <nav id="main-nav" aria-label="Main">
+          <div class="nav-links">
+            <%= nav_link_to "Equipment", equipment_index_path, section: "equipment" %>
+            <%= nav_link_to "Reservations", reservations_path, section: "reservations" %>
+          </div>
+        </nav>
+      </div>
     </header>
 
     <main id="main">

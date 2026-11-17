@@ -62,7 +62,7 @@ Authentication and user accounts, payments, emails, admin panel, Equipment edit/
 | D15 | Language: everything in English (code, comments, UI, validation messages, seeds, commits); only README in Czech. |
 | D16 🧑 | "Nearest available slot" suggestion (Šimon's option A) and `Category` model are bonus phases, done only after the must-have phases are complete. |
 | D17 🧑 | Equipment has an optional `image_url` (https only, max 2048 chars, hotlinked; seeds use freely licensed Wikimedia Commons photos). No file uploads, for simplicity and easy seeding. Without an image a "No image available" placeholder is shown. |
-| D18 🧑 | UI look: "Airbnb-clean": photo-first equipment card grid, rounded cards, soft shadows, one confident accent; still plain CSS, simple, responsive and accessible. Validation errors show only human-friendly messages (no "N errors prevented saving"). |
+| D18 🧑 | UI look: bold, Gumroad-style (revised from "Airbnb-clean" after review): black 2px borders, hard offset shadows, rope-pink and hold-yellow accents, Figtree (self-hosted, OFL). Signature element: a per-unit availability gauge. Still plain CSS, simple, responsive and accessible. Validation errors show only human-friendly messages (no "N errors prevented saving"). |
 
 ---
 
@@ -200,10 +200,11 @@ Claim for README: as the start moves later, a start can only become feasible whe
 
 ## 7. Styling
 - Propshaft; plain CSS in `app/assets/stylesheets/application.css`, plus at most one more file if it grows. No Tailwind, no Sass, no dark mode.
-- Look (D18, Airbnb-clean): lots of white space, one confident accent color, system font stack, 12px rounded cards with soft shadows.
-  - Equipment index: responsive photo card grid (image 4:3 or placeholder, name, units and free now, availability badge, whole card clickable via a stretched link).
-  - Equipment show: hero image, details and reservations on the left, sticky booking card on the right from 48rem.
-  - Reservations: summary card with status pill; lists as rounded tables with status pills; forms inside a card.
+- Look (D18, bold Gumroad-style): white page, black 2px borders, hard offset shadows (4px 4px 0 black), rope pink `#ff7ad9` (only behind black text) and hold yellow `#ffd23f`, chalk `#f4f4f0` surfaces. Radius by hierarchy: cards 12px, controls 8px, pills round. Sentence case, no all-caps labels.
+  - Type: Figtree variable (300–900), self-hosted in `app/assets/fonts/` (latin + latin-ext, SIL OFL 1.1), no third-party font requests.
+  - Equipment index: yellow hero band, photo card grid; each card has the availability gauge (one segment per unit, free = pink, in use = hatched) with "N of M free" text.
+  - Equipment show: photo and details, sticky booking panel with the gauge and the Book button from 48rem.
+  - Reservations: status pills (Upcoming yellow, In progress pink, Finished chalk, Cancelled dashed); forms on a bordered card.
   - Images: `loading="lazy"`, `referrerpolicy="no-referrer"`, `alt` = equipment name; placeholder is `role="img"` with "No image available".
 - Accessibility: WCAG AA contrast, visible `:focus-visible`, semantic HTML, labels on every input, skip link, `prefers-reduced-motion` respected.
 - Responsive: mobile first, single breakpoint around 48rem; tables scroll horizontally inside a wrapper on small screens.
@@ -320,9 +321,9 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
   - `feat: add optional image URL to equipment` (migration with CHECK, validation, form field, image/placeholder partial)
   - `chore: add Wikimedia Commons images to seeds` (URLs verified to load, licences credited in a seeds comment)
 - [ ] **Phase 14: UI refresh** → D18, §7
-  - `style: refresh design tokens, header and typography`
-  - `style: show equipment as photo cards`
-  - `style: add booking card layout and polish tables, forms and badges`
+  - `style: switch to a bold design with Figtree`
+  - `style: show equipment as photo cards with availability gauge`
+  - `style: add booking panel and status badges`
 
 ### Bonus phases (only after Phase 11)
 - [ ] **B1: Nearest available slot** → §4.5. `feat: suggest nearest available start time`

@@ -14,6 +14,24 @@ class EquipmentControllerTest < ActionDispatch::IntegrationTest
     assert_select ".flash", count: 0
   end
 
+  test "nav marks the current section for assistive technology" do
+    get equipment_index_path
+    assert_select "nav a[aria-current='page']", text: "Equipment"
+
+    get reservations_path
+    assert_select "nav a[aria-current='page']", text: "Reservations"
+    assert_select "nav a[aria-current]", count: 1
+  end
+
+  test "header has an accessible mobile menu toggle that is hidden until JavaScript enables it" do
+    get equipment_index_path
+
+    assert_select "header[data-controller='nav-menu']" do
+      assert_select "button.menu-toggle[hidden][type='button'][aria-expanded='false'][aria-controls='main-nav']", text: /Menu/
+      assert_select "nav#main-nav[aria-label='Main'] a", count: 2
+    end
+  end
+
   test "index lists equipment with capacity and units free now" do
     get equipment_index_path
 

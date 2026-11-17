@@ -1,4 +1,9 @@
 module ApplicationHelper
+  # Main navigation link; marks the current section with aria-current.
+  def nav_link_to(label, path, section:)
+    link_to label, path, aria: { current: ("page" if controller_name == section) }
+  end
+
   # ARIA attributes that mark an invalid field and point to its inline message.
   def field_error_attributes(form, attribute)
     return {} unless form.object.errors.include?(attribute)
