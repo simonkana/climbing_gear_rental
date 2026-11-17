@@ -55,6 +55,62 @@ class EquipmentControllerTest < ActionDispatch::IntegrationTest
     assert_select "#upcoming-reservations", text: /No upcoming reservations/
   end
 
+  test "index links to the new equipment form" do
+    get equipment_index_path
+
+    assert_select "a[href='#{new_equipment_path}']", text: "Add equipment"
+  end
+
+  test "new renders a labelled form" do
+    get new_equipment_path
+
+    assert_response :success
+    assert_select "form[action='#{equipment_index_path}']" do
+      %w[name description capacity turnaround_minutes].each do |field|
+        assert_select "label[for='equipment_#{field}']"
+        assert_select "#equipment_#{field}"
+      end
+    end
+  end
+
+  test "create saves equipment and redirects to its public_id page" do
+    assert_difference -> { Equipment.count }, 1 do
+      post equipment_index_path, params: { equipment: {
+        name: "Helmet", description: "Size M/L", capacity: 5, turnaround_minutes: 30
+      } }
+    end
+
+    created = Equipment.order(:id).last
+    assert_redirected_to equipment_path(created)
+    assert_match(/\/equipment\/\h{8}-/, response.location)
+    follow_redirect!
+    assert_select ".flash-notice", text: "Equipment was created."
+    assert_equal [ "Helmet", 5, 30 ], [ created.name, created.capacity, created.turnaround_minutes ]
+  end
+
+  test "create with invalid data re-renders the form with accessible errors" do
+    assert_no_difference -> { Equipment.count } do
+      post equipment_index_path, params: { equipment: { name: "", capacity: 0 } }
+    end
+
+    assert_response :unprocessable_content
+    assert_select ".form-errors[role='alert']" do
+      assert_select "a[href='#equipment_name']", text: /Name can't be blank/
+      assert_select "a[href='#equipment_capacity']"
+    end
+    assert_select "#equipment_name[aria-invalid='true'][aria-describedby='equipment_name_error']"
+    assert_select "#equipment_name_error", text: /can't be blank/
+  end
+
+  test "create ignores a public_id sent in params" do
+    chosen = SecureRandom.uuid_v7
+
+    post equipment_index_path, params: { equipment: { name: "Helmet", capacity: 5, public_id: chosen } }
+
+    assert_not Equipment.exists?(public_id: chosen)
+    assert Equipment.exists?(name: "Helmet")
+  end
+
   test "unknown public_id returns not found" do
     get equipment_path(id: SecureRandom.uuid_v7)
 

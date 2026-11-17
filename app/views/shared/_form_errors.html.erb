@@ -1,0 +1,18 @@
+<%# Error summary for a form builder `form`; attribute errors link to their field. %>
+<% errors = form.object.errors %>
+<% if errors.any? %>
+  <div class="form-errors" role="alert" tabindex="-1">
+    <h2><%= pluralize(errors.count, "error") %> prevented saving</h2>
+    <ul>
+      <% errors.each do |error| %>
+        <li>
+          <% if error.attribute == :base %>
+            <%= error.full_message %>
+          <% else %>
+            <%= link_to error.full_message, "##{form.field_id(error.attribute)}" %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

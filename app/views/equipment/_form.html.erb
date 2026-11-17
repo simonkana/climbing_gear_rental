@@ -1,0 +1,32 @@
+<%= form_with model: equipment, url: equipment_index_path do |form| %>
+  <%= render "shared/form_errors", form: form %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, required: true, maxlength: 120, **field_error_attributes(form, :name) %>
+    <%= field_error_message(form, :name) %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_area :description, rows: 3, **field_error_attributes(form, :description) %>
+    <%= field_error_message(form, :description) %>
+  </div>
+
+  <div class="field">
+    <%= form.label :capacity, "Capacity (units)" %>
+    <%= form.number_field :capacity, required: true, min: 1, max: 100, step: 1, **field_error_attributes(form, :capacity) %>
+    <%= field_error_message(form, :capacity) %>
+  </div>
+
+  <div class="field">
+    <%= form.label :turnaround_minutes, "Turnaround after each rental (minutes)" %>
+    <%= form.number_field :turnaround_minutes, required: true, min: 0, max: 1440, step: 15, **field_error_attributes(form, :turnaround_minutes) %>
+    <%= field_error_message(form, :turnaround_minutes) %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Create equipment" %>
+    <%= link_to "Cancel", equipment_index_path %>
+  </div>
+<% end %>

@@ -283,7 +283,7 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
   Manual mutation check afterwards; note the result for the README.
   - `test: prove booking is safe under concurrent requests` (seam, race test, test pool size if needed)
 
-- [ ] **Phase 7: Equipment UI** (25 min) → §5
+- [x] **Phase 7: Equipment UI** (25 min) → §5
   - `feat: add equipment index and detail pages` (routes, controller, views, controller tests; root → `equipment#index`, remove the Phase 1 `HomeController` placeholder and its test)
   - `feat: add equipment creation form`
 

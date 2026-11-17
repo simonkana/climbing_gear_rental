@@ -2,6 +2,8 @@
 
 <h1>Equipment</h1>
 
+<p><%= link_to "Add equipment", new_equipment_path, class: "button" %></p>
+
 <% if @equipment.any? %>
   <div class="table-wrapper">
     <table>
