@@ -7,21 +7,39 @@
 Reservation.delete_all
 Equipment.delete_all
 
+# Photos: hotlinked Wikimedia Commons thumbnails (D17), all freely licensed:
+#   Rope       "Climbing Rope.jpg", Climber.Ben.Johnson, CC BY-SA 4.0
+#   Harness    "Baudrier.jpg", Savant-fou, CC BY-SA 3.0
+#   GriGri     "Petzl Grigri 2.jpg", Climber.Ben.Johnson, CC BY-SA 4.0
+#   Shoes      "Climbing shoes Rockempire.jpg", Malis, public domain
+#   Quickdraws "Quickdraw Singingrock 1.jpg", Malis, public domain
+#   Helmet     "Climbing helmet Petzl Meteor - 1.jpg", Malis, public domain
+#   Crashpad   "Bouldering Crash Pad.jpg", Mark Donoher, CC BY 2.0
+# Source pages: https://commons.wikimedia.org/wiki/File:<file name>
+commons = ->(path) { "https://thumb.wikimedia.org/wikipedia/commons/thumb/#{path}" }
+
 gear = {
   rope: Equipment.create!(name: "Rope 60 m", capacity: 3, turnaround_minutes: 120,
-    description: "Dynamic single rope, 9.8 mm. Inspected for core damage after every rental."),
+    description: "Dynamic single rope, 9.8 mm. Inspected for core damage after every rental.",
+    image_url: commons.("e/e4/Climbing_Rope.jpg/960px-Climbing_Rope.jpg")),
   harness: Equipment.create!(name: "Harness M", capacity: 4,
-    description: "Sport climbing harness, size M."),
+    description: "Sport climbing harness, size M.",
+    image_url: commons.("f/fd/Baudrier.jpg/960px-Baudrier.jpg")),
   grigri: Equipment.create!(name: "GriGri", capacity: 2,
-    description: "Assisted-braking belay device."),
+    description: "Assisted-braking belay device.",
+    image_url: commons.("5/5f/Petzl_Grigri_2.jpg/960px-Petzl_Grigri_2.jpg")),
   shoes: Equipment.create!(name: "Climbing shoes EU 42", capacity: 2,
-    description: "All-round climbing shoes, EU size 42."),
+    description: "All-round climbing shoes, EU size 42.",
+    image_url: commons.("c/c4/Climbing_shoes_Rockempire.jpg/960px-Climbing_shoes_Rockempire.jpg")),
   quickdraws: Equipment.create!(name: "Quickdraw set 12 pcs", capacity: 3,
-    description: "Twelve 12 cm quickdraws."),
+    description: "Twelve 12 cm quickdraws.",
+    image_url: commons.("a/a6/Quickdraw_Singingrock_1.jpg/960px-Quickdraw_Singingrock_1.jpg")),
   helmet: Equipment.create!(name: "Helmet", capacity: 5,
-    description: "Climbing helmet, adjustable 54-62 cm."),
+    description: "Climbing helmet, adjustable 54-62 cm.",
+    image_url: commons.("9/9b/Climbing_helmet_Petzl_Meteor_-_1.jpg/960px-Climbing_helmet_Petzl_Meteor_-_1.jpg")),
   crashpad: Equipment.create!(name: "Crashpad", capacity: 1,
-    description: "Large bouldering crashpad, 120 x 100 cm.")
+    description: "Large bouldering crashpad, 120 x 100 cm.",
+    image_url: commons.("8/86/Bouldering_Crash_Pad.jpg/960px-Bouldering_Crash_Pad.jpg"))
 }
 
 today = Time.zone.now.beginning_of_day

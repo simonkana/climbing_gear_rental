@@ -18,6 +18,15 @@ class SeedsTest < ActiveSupport::TestCase
     assert_equal 120, Equipment.find_by!(name: "Rope 60 m").turnaround_minutes
   end
 
+  test "every seeded equipment item has a valid https image url" do
+    load_seeds
+
+    Equipment.find_each do |item|
+      assert_match %r{\Ahttps://(thumb|upload)\.wikimedia\.org/}, item.image_url, item.name
+      assert item.valid?, item.errors.full_messages.inspect
+    end
+  end
+
   test "seeds can be loaded repeatedly" do
     load_seeds
     load_seeds
