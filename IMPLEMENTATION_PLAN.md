@@ -262,12 +262,12 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
   - `chore: set Prague time zone and Czech date/time formats` (application.rb, en.yml)
   - `feat: add base layout with navigation and flash messages` (layout, flash partial, stylesheet stub, root placeholder)
 
-- [ ] **Phase 2: Equipment model** (25 min) → §3.1, §3.3
+- [x] **Phase 2: Equipment model** (25 min) → §3.1, §3.3
   Accept: §9.2 tests for Equipment pass, `schema.rb` shows CHECK constraints and unique index.
   - `feat: add Equipment model with public UUID and DB constraints` (migration, `HasPublicId`, model, fixtures, tests)
 
 - [ ] **Phase 3: Reservation model** (30 min) → §3.2 (no capacity logic)
-  - `feat: add Reservation model with time window validations` (migration, model, status enum, field/time validations, fixtures, tests)
+  - `feat: add Reservation model with time window validations` (migration, model, status enum, field/time validations, fixtures, tests; also `Equipment has_many :reservations, dependent: :restrict_with_error`, deferred from Phase 2)
   - `feat: restrict editing of started, finished and cancelled reservations` (edit rules, immutable equipment, tests)
 
 - [ ] **Phase 4: CapacityTimeline** (25 min) → §4.3, §9.1, test-first

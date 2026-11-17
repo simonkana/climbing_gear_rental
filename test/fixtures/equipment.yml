@@ -1,0 +1,13 @@
+# Fixtures skip callbacks, so public_id is set explicitly.
+rope:
+  public_id: 01a1e831-b619-79ee-81b3-fdf4d3e958ab
+  name: Rope 60 m
+  description: Dynamic single rope, 9.8 mm.
+  capacity: 3
+  turnaround_minutes: 120
+
+crashpad:
+  public_id: 01a1e831-b619-7c16-80dc-9112e34059fc
+  name: Crashpad
+  capacity: 1
+  turnaround_minutes: 60
