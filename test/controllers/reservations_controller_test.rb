@@ -45,6 +45,28 @@ class ReservationsControllerTest < ActionDispatch::IntegrationTest
     assert_select "dd", text: /2\. 12\. 2026 16:00/ # blocked until: 14:00 + 120 min
   end
 
+  test "statuses are shown as labelled pills" do
+    get reservations_path
+
+    assert_select "##{row_id(:upcoming)} .status.status-upcoming", text: "Upcoming"
+    assert_select "##{row_id(:in_progress)} .status.status-in-progress", text: "In progress"
+    assert_select "##{row_id(:finished)} .status.status-finished", text: "Finished"
+    assert_select "##{row_id(:cancelled)} .status.status-cancelled", text: "Cancelled"
+
+    get reservation_path(reservations(:cancelled))
+    assert_select ".status.status-cancelled", text: "Cancelled"
+  end
+
+  test "equipment page has a booking panel with the unit gauge" do
+    get equipment_path(equipment(:rope))
+
+    assert_select "aside.booking-panel[aria-labelledby='booking-heading']" do
+      assert_select "h2#booking-heading", text: "Book this gear"
+      assert_select ".gauge-text", text: "2 of 3 free now"
+      assert_select "dd", text: "2 h inspection after each return"
+    end
+  end
+
   test "unknown public_id returns not found" do
     get reservation_path(id: SecureRandom.uuid_v7)
 
@@ -74,7 +96,7 @@ class ReservationsControllerTest < ActionDispatch::IntegrationTest
 
     get equipment_path(crashpad)
 
-    assert_select "a[href='#{new_equipment_reservation_path(crashpad)}']", text: "Book"
+    assert_select ".booking-panel a[href='#{new_equipment_reservation_path(crashpad)}']", text: "Book a time slot"
   end
 
   test "new renders the booking form for the equipment" do

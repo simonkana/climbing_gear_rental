@@ -129,6 +129,10 @@ input::placeholder {
   font-size: 0.875rem;
 }
 
+form > .hint {
+  margin-block-end: var(--space-3);
+}
+
 /* Error summary at the top of a form */
 
 .form-errors {
@@ -317,6 +321,7 @@ summary {
 }
 
 .stretched-link {
+  font-weight: inherit; /* keep the heading weight, not the link weight */
   text-decoration: none;
 }
 
@@ -365,3 +370,119 @@ summary {
   font-weight: 800;
 }
 
+
+/* Detail pages: intro and content on the left, a sticky panel on the right.
+   On small screens the order is intro, panel, content. */
+
+.detail-layout {
+  display: grid;
+  /* minmax(0, ...) lets the column shrink below its content's width, so wide
+     tables scroll inside .table-wrapper instead of widening the page. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4) var(--space-5);
+}
+
+.detail-intro .equipment-image {
+  max-width: none;
+}
+
+.lead {
+  max-width: 60ch;
+  font-size: 1.125rem;
+}
+
+@media (min-width: 48rem) {
+  .detail-layout {
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    grid-template-areas:
+      "intro panel"
+      "rest  panel";
+    align-items: start;
+  }
+
+  .detail-intro {
+    grid-area: intro;
+  }
+
+  .detail-rest {
+    grid-area: rest;
+  }
+
+  .booking-panel {
+    grid-area: panel;
+    position: sticky;
+    top: 6rem; /* below the sticky header */
+  }
+}
+
+.booking-panel,
+.card {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
+.booking-panel h2 {
+  margin: 0;
+}
+
+.booking-panel .facts,
+.booking-panel .equipment-image,
+.card .facts,
+.card .actions,
+.card form {
+  margin: 0;
+}
+
+.card {
+  max-width: 44rem;
+}
+
+.button-block {
+  width: 100%;
+}
+
+.title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-block-end: var(--space-4);
+}
+
+.title-row h1 {
+  margin: 0;
+}
+
+/* Status pills (Reservation#state) */
+
+.status {
+  display: inline-block;
+  padding: 0.125rem var(--space-3);
+  border: var(--border);
+  border-radius: var(--radius-pill);
+  font-size: 0.875rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-upcoming {
+  background: var(--hold-yellow);
+}
+
+.status-in-progress {
+  background: var(--rope-pink);
+}
+
+.status-finished {
+  background: var(--chalk);
+}
+
+.status-cancelled {
+  background: var(--paper);
+  border-style: dashed;
+}

@@ -1,72 +1,79 @@
 <% content_for :title, "#{@equipment.name} · Climbing Gear Rental" %>
 
-<h1><%= @equipment.name %></h1>
-<%= render "equipment/image", equipment: @equipment %>
-<% if @equipment.description.present? %>
-  <p><%= @equipment.description %></p>
-<% end %>
+<div class="detail-layout">
+  <div class="detail-intro">
+    <h1><%= @equipment.name %></h1>
+    <%= render "equipment/image", equipment: @equipment %>
+    <% if @equipment.description.present? %>
+      <p class="lead"><%= @equipment.description %></p>
+    <% end %>
+  </div>
 
-<p><%= link_to "Book", new_equipment_reservation_path(@equipment), class: "button" %></p>
+  <aside class="booking-panel" aria-labelledby="booking-heading">
+    <h2 id="booking-heading">Book this gear</h2>
+    <%= render "equipment/gauge", free: @equipment.units_free_at, capacity: @equipment.capacity %>
+    <dl class="facts">
+      <dt>Capacity</dt>
+      <dd><%= pluralize(@equipment.capacity, "unit") %></dd>
+      <dt>Turnaround</dt>
+      <dd><%= turnaround_note(@equipment.turnaround_minutes) %></dd>
+    </dl>
+    <%= link_to "Book a time slot", new_equipment_reservation_path(@equipment), class: "button button-block" %>
+  </aside>
 
-<dl class="facts">
-  <dt>Capacity</dt>
-  <dd><%= pluralize(@equipment.capacity, "unit") %></dd>
-  <dt>Turnaround</dt>
-  <dd><%= @equipment.turnaround_minutes %> min after each rental (inspection and cleaning)</dd>
-  <dt>Free now</dt>
-  <dd><%= @equipment.units_free_at %></dd>
-</dl>
+  <div class="detail-rest">
+    <section id="upcoming-reservations" aria-labelledby="upcoming-heading">
+      <h2 id="upcoming-heading">Upcoming reservations</h2>
+      <% if @upcoming.any? %>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col">Blocked until</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @upcoming.each do |reservation| %>
+                <tr id="reservation_<%= reservation.public_id %>">
+                  <td><%= link_to l(reservation.start_date), reservation_path(reservation) %></td>
+                  <td><%= l reservation.end_date %></td>
+                  <td><%= l reservation.blocked_until %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p>No upcoming reservations.</p>
+      <% end %>
+    </section>
 
-<section id="upcoming-reservations" aria-labelledby="upcoming-heading">
-  <h2 id="upcoming-heading">Upcoming reservations</h2>
-  <% if @upcoming.any? %>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">From</th>
-            <th scope="col">To</th>
-            <th scope="col">Blocked until</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @upcoming.each do |reservation| %>
-            <tr id="reservation_<%= reservation.public_id %>">
-              <td><%= link_to l(reservation.start_date), reservation_path(reservation) %></td>
-              <td><%= l reservation.end_date %></td>
-              <td><%= l reservation.blocked_until %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  <% else %>
-    <p>No upcoming reservations.</p>
-  <% end %>
-</section>
-
-<% if @past.any? %>
-  <details id="past-reservations">
-    <summary>Past and cancelled reservations (<%= @past.size %>)</summary>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">From</th>
-            <th scope="col">To</th>
-            <th scope="col">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @past.each do |reservation| %>
-            <tr id="reservation_<%= reservation.public_id %>">
-              <td><%= link_to l(reservation.start_date), reservation_path(reservation) %></td>
-              <td><%= l reservation.end_date %></td>
-              <td><%= reservation.cancelled? ? "Cancelled" : "Finished" %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  </details>
-<% end %>
+    <% if @past.any? %>
+      <details id="past-reservations">
+        <summary>Past and cancelled reservations (<%= @past.size %>)</summary>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @past.each do |reservation| %>
+                <tr id="reservation_<%= reservation.public_id %>">
+                  <td><%= link_to l(reservation.start_date), reservation_path(reservation) %></td>
+                  <td><%= l reservation.end_date %></td>
+                  <td><%= render "reservations/status", reservation: reservation %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </details>
+    <% end %>
+  </div>
+</div>

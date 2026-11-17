@@ -1,9 +1,20 @@
 <% content_for :title, "Book #{@equipment.name} · Climbing Gear Rental" %>
 
-<h1>Book <%= @equipment.name %></h1>
-<%= render "equipment/image", equipment: @equipment %>
-<p><%= pluralize(@equipment.capacity, "unit") %> available in total.</p>
+<div class="detail-layout">
+  <div class="detail-intro">
+    <h1>Book <%= @equipment.name %></h1>
+  </div>
 
-<%= render "form", reservation: @reservation, url: equipment_reservations_path(@equipment), submit_label: "Book" %>
+  <aside class="booking-panel" aria-label="<%= @equipment.name %>">
+    <%= render "equipment/image", equipment: @equipment %>
+    <%= render "equipment/gauge", free: @equipment.units_free_at, capacity: @equipment.capacity %>
+    <p class="hint"><%= turnaround_note(@equipment.turnaround_minutes) %></p>
+    <p><%= link_to "Back to #{@equipment.name}", equipment_path(@equipment) %></p>
+  </aside>
 
-<p><%= link_to "Back to #{@equipment.name}", equipment_path(@equipment) %></p>
+  <div class="detail-rest">
+    <div class="card">
+      <%= render "form", reservation: @reservation, url: equipment_reservations_path(@equipment), submit_label: "Book" %>
+    </div>
+  </div>
+</div>

@@ -1,45 +1,38 @@
 <% content_for :title, "Reservation · Climbing Gear Rental" %>
 
-<h1>Reservation</h1>
+<div class="title-row">
+  <h1>Reservation</h1>
+  <%= render "reservations/status", reservation: @reservation %>
+</div>
 
-<dl class="facts">
-  <dt>Equipment</dt>
-  <dd><%= link_to @reservation.equipment.name, equipment_path(@reservation.equipment) %></dd>
-  <dt>Customer</dt>
-  <dd><%= @reservation.customer_name %></dd>
-  <dt>Email</dt>
-  <dd><%= @reservation.customer_email %></dd>
-  <% if @reservation.customer_phone.present? %>
-    <dt>Phone</dt>
-    <dd><%= @reservation.customer_phone %></dd>
-  <% end %>
-  <dt>From</dt>
-  <dd><%= l @reservation.start_date %></dd>
-  <dt>To</dt>
-  <dd><%= l @reservation.end_date %></dd>
-  <dt>Blocked until</dt>
-  <dd>
-    <%= l @reservation.blocked_until %>
-    <span class="hint">(the unit is inspected and cleaned for <%= @reservation.equipment.turnaround_minutes %> min after return)</span>
-  </dd>
-  <dt>Status</dt>
-  <dd>
-    <% if @reservation.cancelled? %>
-      Cancelled
-    <% elsif @reservation.finished? %>
-      Finished
-    <% elsif @reservation.started? %>
-      In progress
-    <% else %>
-      Upcoming
+<div class="card">
+  <dl class="facts">
+    <dt>Equipment</dt>
+    <dd><%= link_to @reservation.equipment.name, equipment_path(@reservation.equipment) %></dd>
+    <dt>Customer</dt>
+    <dd><%= @reservation.customer_name %></dd>
+    <dt>Email</dt>
+    <dd><%= @reservation.customer_email %></dd>
+    <% if @reservation.customer_phone.present? %>
+      <dt>Phone</dt>
+      <dd><%= @reservation.customer_phone %></dd>
     <% end %>
-  </dd>
-</dl>
+    <dt>From</dt>
+    <dd><%= l @reservation.start_date %></dd>
+    <dt>To</dt>
+    <dd><%= l @reservation.end_date %></dd>
+    <dt>Blocked until</dt>
+    <dd>
+      <%= l @reservation.blocked_until %>
+      <span class="hint">(the unit is inspected and cleaned for <%= @reservation.equipment.turnaround_minutes %> min after return)</span>
+    </dd>
+  </dl>
 
-<% if @reservation.editable? %>
-  <div class="actions">
-    <%= link_to "Edit", edit_reservation_path(@reservation), class: "button" %>
-    <%= button_to "Cancel reservation", cancel_reservation_path(@reservation), method: :patch,
-          class: "button button-danger", form: { data: { turbo_confirm: "Cancel this reservation?" } } %>
-  </div>
-<% end %>
+  <% if @reservation.editable? %>
+    <div class="actions">
+      <%= link_to "Edit", edit_reservation_path(@reservation), class: "button" %>
+      <%= button_to "Cancel reservation", cancel_reservation_path(@reservation), method: :patch,
+            class: "button button-danger", form: { data: { turbo_confirm: "Cancel this reservation?" } } %>
+    </div>
+  <% end %>
+</div>

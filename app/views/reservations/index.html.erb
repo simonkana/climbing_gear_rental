@@ -23,7 +23,7 @@
               <td><%= link_to reservation.customer_name, reservation_path(reservation) %></td>
               <td><%= l reservation.start_date %></td>
               <td><%= l reservation.end_date %></td>
-              <td><%= reservation.started? ? "In progress" : "Upcoming" %></td>
+              <td><%= render "reservations/status", reservation: reservation %></td>
             </tr>
           <% end %>
         </tbody>
@@ -55,7 +55,7 @@
               <td><%= link_to reservation.customer_name, reservation_path(reservation) %></td>
               <td><%= l reservation.start_date %></td>
               <td><%= l reservation.end_date %></td>
-              <td><%= reservation.cancelled? ? "Cancelled" : "Finished" %></td>
+              <td><%= render "reservations/status", reservation: reservation %></td>
             </tr>
           <% end %>
         </tbody>

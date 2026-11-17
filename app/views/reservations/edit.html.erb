@@ -1,11 +1,23 @@
 <% content_for :title, "Edit reservation · Climbing Gear Rental" %>
 
-<h1>Edit reservation</h1>
-<p><%= link_to @reservation.equipment.name, equipment_path(@reservation.equipment) %></p>
-<% if @reservation.started? %>
-  <p class="hint">This reservation has already started, so only its end can be changed.</p>
-<% end %>
+<div class="detail-layout">
+  <div class="detail-intro">
+    <h1>Edit reservation</h1>
+    <% if @reservation.started? %>
+      <p class="hint">This reservation has already started, so only its end can be changed.</p>
+    <% end %>
+  </div>
 
-<%= render "form", reservation: @reservation, url: reservation_path(@reservation), submit_label: "Save changes" %>
+  <aside class="booking-panel" aria-label="<%= @reservation.equipment.name %>">
+    <%= render "equipment/image", equipment: @reservation.equipment %>
+    <p><%= link_to @reservation.equipment.name, equipment_path(@reservation.equipment) %></p>
+    <p class="hint"><%= turnaround_note(@reservation.equipment.turnaround_minutes) %></p>
+    <p><%= link_to "Back to reservation", reservation_path(@reservation) %></p>
+  </aside>
 
-<p><%= link_to "Back to reservation", reservation_path(@reservation) %></p>
+  <div class="detail-rest">
+    <div class="card">
+      <%= render "form", reservation: @reservation, url: reservation_path(@reservation), submit_label: "Save changes" %>
+    </div>
+  </div>
+</div>

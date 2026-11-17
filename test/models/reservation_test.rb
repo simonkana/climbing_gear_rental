@@ -148,6 +148,13 @@ class ReservationTest < ActiveSupport::TestCase
     assert_equal reservation.end_date + 2.hours, reservation.blocked_until
   end
 
+  test "state describes where a reservation is in its lifecycle" do
+    assert_equal :upcoming, reservations(:upcoming).state
+    assert_equal :in_progress, reservations(:in_progress).state
+    assert_equal :finished, reservations(:finished).state
+    assert_equal :cancelled, reservations(:cancelled).state
+  end
+
   test "only active reservations that have not finished are editable" do
     assert reservations(:upcoming).editable?
     assert reservations(:in_progress).editable?

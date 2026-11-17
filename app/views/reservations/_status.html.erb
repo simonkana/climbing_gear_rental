@@ -1,0 +1,3 @@
+<%# locals: (reservation:) %>
+<% state = reservation.state %>
+<span class="status status-<%= state.to_s.dasherize %>"><%= state.to_s.humanize %></span>

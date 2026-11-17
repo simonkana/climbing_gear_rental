@@ -39,6 +39,15 @@ class Reservation < ApplicationRecord
     persisted? && end_date_in_database <= Time.current
   end
 
+  # Where the reservation is in its lifecycle (used for the status pill).
+  def state
+    if cancelled? then :cancelled
+    elsif finished? then :finished
+    elsif started? then :in_progress
+    else :upcoming
+    end
+  end
+
   # Whether the customer may still edit or cancel it.
   def editable?
     status_in_database == "active" && !finished?
