@@ -218,6 +218,48 @@ class ReservationsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  # cancel
+
+  test "show offers cancelling with a confirmation only while editable" do
+    reservation = reservations(:upcoming)
+    get reservation_path(reservation)
+    assert_select "form[action='#{cancel_reservation_path(reservation)}'][data-turbo-confirm]" do
+      assert_select "input[name='_method'][value='patch']"
+      assert_select "button", text: "Cancel reservation"
+    end
+
+    get reservation_path(reservations(:finished))
+    assert_select "form[action='#{cancel_reservation_path(reservations(:finished))}']", count: 0
+  end
+
+  test "cancel marks the reservation cancelled and frees the slot" do
+    crashpad = equipment(:crashpad) # capacity 1
+    post equipment_reservations_path(crashpad), params: booking_params
+    reservation = Reservation.order(:id).last
+
+    patch cancel_reservation_path(reservation)
+
+    assert_redirected_to reservation_path(reservation)
+    assert reservation.reload.cancelled?
+    follow_redirect!
+    assert_select ".flash-notice[role='status']", text: "Reservation was cancelled."
+
+    assert_difference -> { crashpad.reservations.active.count }, 1 do
+      post equipment_reservations_path(crashpad), params: booking_params(customer_name: "Next")
+    end
+  end
+
+  test "finished reservation cannot be cancelled" do
+    reservation = reservations(:finished)
+
+    patch cancel_reservation_path(reservation)
+
+    assert_redirected_to reservation_path(reservation)
+    assert reservation.reload.active?
+    follow_redirect!
+    assert_select ".flash-alert[role='alert']", text: "Finished or cancelled reservations cannot be changed"
+  end
+
   test "equipment page links its reservations" do
     get equipment_path(equipment(:rope))
 

@@ -1,6 +1,6 @@
 # Every create/update goes through ReservationBooking (GUARDRAILS #1).
 class ReservationsController < ApplicationController
-  before_action :set_reservation, only: %i[show edit update]
+  before_action :set_reservation, only: %i[show edit update cancel]
   before_action :require_editable, only: %i[edit update]
   before_action :set_equipment, only: %i[new create]
 
@@ -40,6 +40,16 @@ class ReservationsController < ApplicationController
       redirect_to @reservation, notice: "Reservation was updated."
     else
       render :edit, status: :unprocessable_content
+    end
+  end
+
+  # Cancelling only frees capacity, so it needs no lock (plan §4.4). The model
+  # rejects cancelling a finished or already cancelled reservation.
+  def cancel
+    if @reservation.update(status: :cancelled)
+      redirect_to @reservation, notice: "Reservation was cancelled."
+    else
+      redirect_to @reservation, alert: @reservation.errors.full_messages.to_sentence
     end
   end
 

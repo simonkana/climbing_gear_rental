@@ -287,7 +287,7 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
   - `feat: add equipment index and detail pages` (routes, controller, views, controller tests; root → `equipment#index`, remove the Phase 1 `HomeController` placeholder and its test)
   - `feat: add equipment creation form`
 
-- [ ] **Phase 8: Reservation UI** (35 min) → §5
+- [x] **Phase 8: Reservation UI** (35 min) → §5
   - `feat: add reservation index and detail pages`
   - `feat: add reservation booking form` (nested new/create via the service, form partial, errors partial)
   - `feat: add reservation editing` (edit/update via the service)

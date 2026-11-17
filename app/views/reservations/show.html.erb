@@ -39,5 +39,7 @@
 <% if @reservation.editable? %>
   <div class="actions">
     <%= link_to "Edit", edit_reservation_path(@reservation), class: "button" %>
+    <%= button_to "Cancel reservation", cancel_reservation_path(@reservation), method: :patch,
+          class: "button button-danger", form: { data: { turbo_confirm: "Cancel this reservation?" } } %>
   </div>
 <% end %>
