@@ -266,7 +266,7 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
   Accept: §9.2 tests for Equipment pass, `schema.rb` shows CHECK constraints and unique index.
   - `feat: add Equipment model with public UUID and DB constraints` (migration, `HasPublicId`, model, fixtures, tests)
 
-- [ ] **Phase 3: Reservation model** (30 min) → §3.2 (no capacity logic)
+- [x] **Phase 3: Reservation model** (30 min) → §3.2 (no capacity logic)
   - `feat: add Reservation model with time window validations` (migration, model, status enum, field/time validations, fixtures, tests; also `Equipment has_many :reservations, dependent: :restrict_with_error`, deferred from Phase 2)
   - `feat: restrict editing of started, finished and cancelled reservations` (edit rules, immutable equipment, tests)
 

@@ -12,7 +12,10 @@ en:
       models:
         reservation:
           attributes:
+            base:
+              not_editable: "Finished or cancelled reservations cannot be changed"
             start_date:
+              already_started: "cannot be changed once the reservation has started"
               not_in_future: "must be in the future"
               not_on_time_step: "must be on a 15-minute step (:00, :15, :30 or :45)"
             end_date:

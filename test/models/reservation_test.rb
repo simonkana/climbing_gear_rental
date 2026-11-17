@@ -142,6 +142,73 @@ class ReservationTest < ActiveSupport::TestCase
     assert build_reservation(start_date: start, end_date: finish).valid?
   end
 
+  # editing rules
+
+  test "upcoming reservation can be changed" do
+    reservation = reservations(:upcoming)
+    reservation.end_date += 1.hour
+
+    assert reservation.valid?
+  end
+
+  test "upcoming reservation can be cancelled" do
+    reservation = reservations(:upcoming)
+    reservation.status = :cancelled
+
+    assert reservation.valid?
+  end
+
+  test "cancelled reservation cannot be changed" do
+    reservation = reservations(:cancelled)
+    reservation.customer_name = "Someone Else"
+
+    assert_not reservation.valid?
+    assert reservation.errors.added?(:base, :not_editable)
+  end
+
+  test "cancelled reservation cannot be reactivated" do
+    reservation = reservations(:cancelled)
+    reservation.status = :active
+
+    assert_not reservation.valid?
+    assert reservation.errors.added?(:base, :not_editable)
+  end
+
+  test "finished reservation cannot be changed or cancelled" do
+    changed = reservations(:finished)
+    changed.customer_name = "Someone Else"
+    assert_not changed.valid?
+    assert changed.errors.added?(:base, :not_editable)
+
+    cancelled = Reservation.find(reservations(:finished).id)
+    cancelled.status = :cancelled
+    assert_not cancelled.valid?
+    assert cancelled.errors.added?(:base, :not_editable)
+  end
+
+  test "start of an in-progress reservation cannot be moved" do
+    reservation = reservations(:in_progress)
+    reservation.start_date += 15.minutes
+
+    assert_not reservation.valid?
+    assert reservation.errors.added?(:start_date, :already_started)
+  end
+
+  test "in-progress reservation can be extended" do
+    reservation = reservations(:in_progress)
+    reservation.end_date += 2.hours
+
+    assert reservation.valid?
+  end
+
+  test "equipment cannot be changed after create" do
+    reservation = reservations(:upcoming)
+
+    assert_raises(ActiveRecord::ReadonlyAttributeError) do
+      reservation.equipment = equipment(:crashpad)
+    end
+  end
+
   # database constraints (bypassing validations on purpose)
 
   def build_unvalidated(**attributes)

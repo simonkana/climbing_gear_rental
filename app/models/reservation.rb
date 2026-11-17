@@ -8,6 +8,8 @@ class Reservation < ApplicationRecord
   MAX_DURATION = 30.days
 
   belongs_to :equipment
+  # Moving a reservation to other equipment would need two equipment locks (D11).
+  attr_readonly :equipment_id
 
   enum :status, { active: "active", cancelled: "cancelled" }, default: :active, validate: true
 
@@ -19,7 +21,18 @@ class Reservation < ApplicationRecord
 
   validate :end_after_start_within_duration_limits
   validate :times_on_time_step
-  validate :start_in_future, if: -> { new_record? || will_save_change_to_start_date? }
+  validate :start_in_future, if: -> { new_record? || (will_save_change_to_start_date? && !started?) }
+  validate :editable, on: :update
+  validate :start_unchanged_once_started, on: :update
+
+  # Based on the persisted values, so edits in progress don't change the answer.
+  def started?
+    persisted? && start_date_in_database <= Time.current
+  end
+
+  def finished?
+    persisted? && end_date_in_database <= Time.current
+  end
 
   private
     def end_after_start_within_duration_limits
@@ -48,5 +61,15 @@ class Reservation < ApplicationRecord
       return if start_date.blank?
 
       errors.add(:start_date, :not_in_future) unless start_date > Time.current
+    end
+
+    def editable
+      return unless changed?
+
+      errors.add(:base, :not_editable) if status_in_database == "cancelled" || finished?
+    end
+
+    def start_unchanged_once_started
+      errors.add(:start_date, :already_started) if will_save_change_to_start_date? && started?
     end
 end
