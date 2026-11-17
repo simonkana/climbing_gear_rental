@@ -14,6 +14,7 @@ en:
           attributes:
             base:
               not_editable: "Finished or cancelled reservations cannot be changed"
+              over_capacity: "Not available: all %{capacity} units are taken at some point between %{start} and %{end} (each rental also blocks %{turnaround} min for inspection after it ends)."
             start_date:
               already_started: "cannot be changed once the reservation has started"
               not_in_future: "must be in the future"
