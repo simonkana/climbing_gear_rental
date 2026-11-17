@@ -46,8 +46,10 @@ class ReservationBooking
       # serializes writers, a locking range read would only add gap locks.
       # Blocked intervals intersect: existing.start < window.end and
       # existing.end + turnaround > window.start (touching rows are dropped
-      # by the timeline).
+      # by the timeline). On update the reservation itself is excluded (D6);
+      # on create its id is nil, which excludes nothing.
       existing = equipment.reservations.active
+        .where.not(id: reservation.id)
         .where(start_date: ...window.end)
         .where(end_date: (window.begin - turnaround)..)
         .pluck(:start_date, :end_date)

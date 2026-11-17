@@ -144,6 +144,48 @@ class ReservationBookingTest < ActiveSupport::TestCase
     assert result
   end
 
+  # updates (same locked path, D6)
+
+  def rebook(reservation, start_date: reservation.start_date, end_date: reservation.end_date)
+    reservation.assign_attributes(start_date: start_date, end_date: end_date)
+    ReservationBooking.new(reservation).call
+  end
+
+  test "an updated reservation does not count against itself" do
+    reservation = book!(equipment(:crashpad), at(10), at(12))
+
+    assert rebook(reservation, end_date: at(14))
+    assert_equal at(14), reservation.reload.end_date
+  end
+
+  test "extension is rejected when it runs into the next reservation's turnaround window" do
+    crashpad = equipment(:crashpad) # capacity 1, turnaround 60 min
+    first = book!(crashpad, at(10), at(12))
+    book!(crashpad, at(14), at(16))
+
+    assert_not rebook(first, end_date: at(13, 30)) # blocked until 14:30, next starts 14:00
+    assert first.errors.of_kind?(:base, :over_capacity)
+    assert_equal at(12), first.reload.end_date
+  end
+
+  test "extension up to the turnaround boundary is accepted" do
+    crashpad = equipment(:crashpad)
+    first = book!(crashpad, at(10), at(12))
+    book!(crashpad, at(14), at(16))
+
+    assert rebook(first, end_date: at(13)) # blocked until exactly 14:00
+  end
+
+  test "moving a reservation into a full slot is rejected" do
+    crashpad = equipment(:crashpad)
+    book!(crashpad, at(10), at(12))
+    later = book!(crashpad, at(15), at(17))
+
+    assert_not rebook(later, start_date: at(11), end_date: at(13))
+    assert later.errors.of_kind?(:base, :over_capacity)
+    assert_equal at(15), later.reload.start_date
+  end
+
   test "turnaround across the DST change uses absolute time" do
     travel_to Time.utc(2026, 10, 20, 8, 0)
     gear = create_equipment(capacity: 1, turnaround_minutes: 60)
