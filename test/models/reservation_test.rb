@@ -142,6 +142,12 @@ class ReservationTest < ActiveSupport::TestCase
     assert build_reservation(start_date: start, end_date: finish).valid?
   end
 
+  test "blocked until adds the equipment turnaround to the end" do
+    reservation = reservations(:upcoming) # rope, turnaround 120 min
+
+    assert_equal reservation.end_date + 2.hours, reservation.blocked_until
+  end
+
   # editing rules
 
   test "upcoming reservation can be changed" do

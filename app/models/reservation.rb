@@ -25,6 +25,11 @@ class Reservation < ApplicationRecord
   validate :editable, on: :update
   validate :start_unchanged_once_started, on: :update
 
+  # End of the blocked interval: the unit is unavailable until inspection is done.
+  def blocked_until
+    end_date + equipment.turnaround_minutes.minutes
+  end
+
   # Based on the persisted values, so edits in progress don't change the answer.
   def started?
     persisted? && start_date_in_database <= Time.current

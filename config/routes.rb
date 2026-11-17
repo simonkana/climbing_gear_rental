@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  # Temporary placeholder; moves to equipment#index in Phase 7.
-  root "home#index"
+  root "equipment#index"
+
+  resources :equipment, only: %i[index show]
 end

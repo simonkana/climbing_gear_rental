@@ -92,6 +92,28 @@ class EquipmentTest < ActiveSupport::TestCase
     assert_not build_equipment(turnaround_minutes: 30.5).valid?
   end
 
+  # units_free_at
+
+  test "units free at a moment subtract reservations blocking that moment" do
+    travel_to Time.zone.local(2026, 12, 1, 8, 0)
+
+    assert_equal 2, equipment(:rope).units_free_at # in_progress blocks one unit
+    assert_equal 1, equipment(:crashpad).units_free_at
+  end
+
+  test "a unit stays blocked during turnaround and is free exactly at its end" do
+    rope = equipment(:rope) # in_progress ends 12:00 UTC, turnaround 120 min
+
+    assert_equal 2, rope.units_free_at(Time.utc(2026, 12, 1, 13, 59))
+    assert_equal 3, rope.units_free_at(Time.utc(2026, 12, 1, 14, 0))
+  end
+
+  test "cancelled reservations do not reduce free units" do
+    rope = equipment(:rope) # cancelled fixture: 3 Dec 09:00-11:00 UTC
+
+    assert_equal 3, rope.units_free_at(Time.utc(2026, 12, 3, 10, 0))
+  end
+
   # associations
 
   test "equipment with reservations cannot be destroyed" do
