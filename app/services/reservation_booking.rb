@@ -19,12 +19,7 @@ class ReservationBooking
 
     Reservation.transaction do
       # The lock MUST stay the first statement of the transaction (GUARDRAILS #2).
-      # InnoDB (REPEATABLE READ) takes the read snapshot at the first plain,
-      # non-locking read. Locking first means the snapshot for the overlap query
-      # below is taken only after the lock is granted, i.e. after any competing
-      # booking of this equipment has committed. A plain read before the lock
-      # would let two bookings check against the same stale data.
-      equipment = Equipment.lock.find(reservation.equipment_id)
+      equipment = lock_equipment
 
       if over_capacity?(equipment)
         add_capacity_error(equipment)
@@ -35,9 +30,26 @@ class ReservationBooking
     end
   rescue ActiveRecord::RecordInvalid
     false
+  rescue ActiveRecord::LockWaitTimeout, ActiveRecord::Deadlocked
+    # Should not happen (one lock per booking, no lock-ordering cycles), but a
+    # long-running lock holder can still time us out. Report, do not retry.
+    reservation.errors.add(:base, :busy)
+    false
   end
 
   private
+    # SELECT ... FOR UPDATE on the equipment primary key: an exclusive record
+    # lock (no gap lock) that serializes all bookings of this equipment.
+    #
+    # InnoDB (REPEATABLE READ) takes the read snapshot at the first plain,
+    # non-locking read. Locking first means the snapshot for the overlap query
+    # is taken only after the lock is granted, i.e. after any competing booking
+    # of this equipment has committed. A plain read before the lock would let
+    # two bookings check against the same stale data.
+    def lock_equipment
+      Equipment.lock.find(reservation.equipment_id)
+    end
+
     def over_capacity?(equipment)
       turnaround = equipment.turnaround_minutes.minutes
       window = reservation.start_date...(reservation.end_date + turnaround)

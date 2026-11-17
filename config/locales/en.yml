@@ -13,6 +13,7 @@ en:
         reservation:
           attributes:
             base:
+              busy: "The system is busy right now, please try again."
               not_editable: "Finished or cancelled reservations cannot be changed"
               over_capacity: "Not available: all %{capacity} units are taken at some point between %{start} and %{end} (each rental also blocks %{turnaround} min for inspection after it ends)."
             start_date:

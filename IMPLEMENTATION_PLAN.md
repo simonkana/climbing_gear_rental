@@ -273,7 +273,7 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
 - [x] **Phase 4: CapacityTimeline** (25 min) → §4.3, §9.1, test-first
   - `feat: add sweep-line capacity timeline`
 
-- [ ] **Phase 5: ReservationBooking service** (35 min) → §4.4, §9.3 service part
+- [x] **Phase 5: ReservationBooking service** (35 min) → §4.4, §9.3 service part
   - `feat: add locked reservation booking service` (create path: lock, overlap query, capacity error, tests)
   - `feat: support reservation updates in booking service` (exclude self, extension cases, tests)
   - `feat: handle lock timeouts and deadlocks in booking`

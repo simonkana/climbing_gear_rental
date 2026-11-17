@@ -186,6 +186,22 @@ class ReservationBookingTest < ActiveSupport::TestCase
     assert_equal at(15), later.reload.start_date
   end
 
+  # lock errors (error handling only; real locking is proven by the concurrency test)
+
+  [ ActiveRecord::LockWaitTimeout, ActiveRecord::Deadlocked ].each do |error|
+    test "reports a busy error instead of raising on #{error.name.demodulize}" do
+      reservation = build(create_equipment(capacity: 1), at(10), at(12))
+      booking = ReservationBooking.new(reservation)
+      booking.define_singleton_method(:lock_equipment) { raise error }
+
+      assert_no_difference -> { Reservation.count } do
+        assert_not booking.call
+      end
+      assert reservation.errors.of_kind?(:base, :busy)
+      assert_not reservation.persisted?
+    end
+  end
+
   test "turnaround across the DST change uses absolute time" do
     travel_to Time.utc(2026, 10, 20, 8, 0)
     gear = create_equipment(capacity: 1, turnaround_minutes: 60)
