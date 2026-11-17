@@ -1,0 +1,38 @@
+# Times are UTC. Tests travel to 2026-12-01 08:00 Prague (07:00 UTC), see
+# ReservationTest::NOW. Fixtures skip callbacks, so public_id is set explicitly.
+upcoming:
+  public_id: 01a1e840-74e3-7ad6-8bf0-67c10bae6b79
+  equipment: rope
+  customer_name: Alex Honnold
+  customer_email: alex@example.com
+  start_date: 2026-12-02 09:00:00
+  end_date: 2026-12-02 13:00:00
+  status: active
+
+in_progress:
+  public_id: 01a1e840-74e3-7d6f-9ee0-e7ed260195da
+  equipment: rope
+  customer_name: Lynn Hill
+  customer_email: lynn@example.com
+  customer_phone: "+420 123 456 789"
+  start_date: 2026-12-01 06:00:00
+  end_date: 2026-12-01 12:00:00
+  status: active
+
+finished:
+  public_id: 01a1e840-74e3-7dc5-b32b-b9f671c18e89
+  equipment: rope
+  customer_name: Adam Ondra
+  customer_email: adam@example.com
+  start_date: 2026-11-28 08:00:00
+  end_date: 2026-11-28 11:00:00
+  status: active
+
+cancelled:
+  public_id: 01a1e840-74e3-7f6d-b274-6691314fd5a4
+  equipment: rope
+  customer_name: Janja Garnbret
+  customer_email: janja@example.com
+  start_date: 2026-12-03 09:00:00
+  end_date: 2026-12-03 11:00:00
+  status: cancelled

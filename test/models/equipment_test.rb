@@ -92,6 +92,16 @@ class EquipmentTest < ActiveSupport::TestCase
     assert_not build_equipment(turnaround_minutes: 30.5).valid?
   end
 
+  # associations
+
+  test "equipment with reservations cannot be destroyed" do
+    item = equipment(:rope)
+
+    assert_not item.destroy
+    assert item.errors.added?(:base, :"restrict_dependent_destroy.has_many", record: "reservations")
+    assert Equipment.exists?(item.id)
+  end
+
   # database constraints (bypassing validations on purpose; public_id is set
   # explicitly because save(validate: false) skips the before_validation callback)
 
