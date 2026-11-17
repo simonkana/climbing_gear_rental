@@ -1,0 +1,65 @@
+<% content_for :title, "Reservations · Climbing Gear Rental" %>
+
+<h1>Reservations</h1>
+
+<section id="upcoming-reservations" aria-labelledby="upcoming-heading">
+  <h2 id="upcoming-heading">Upcoming</h2>
+  <% if @upcoming.any? %>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Equipment</th>
+            <th scope="col">Customer</th>
+            <th scope="col">From</th>
+            <th scope="col">To</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @upcoming.each do |reservation| %>
+            <tr id="reservation_<%= reservation.public_id %>">
+              <td><%= reservation.equipment.name %></td>
+              <td><%= link_to reservation.customer_name, reservation_path(reservation) %></td>
+              <td><%= l reservation.start_date %></td>
+              <td><%= l reservation.end_date %></td>
+              <td><%= reservation.started? ? "In progress" : "Upcoming" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p>No upcoming reservations.</p>
+  <% end %>
+</section>
+
+<% if @past.any? %>
+  <details id="past-reservations">
+    <summary>Past and cancelled (<%= @past.size %>)</summary>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Equipment</th>
+            <th scope="col">Customer</th>
+            <th scope="col">From</th>
+            <th scope="col">To</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @past.each do |reservation| %>
+            <tr id="reservation_<%= reservation.public_id %>">
+              <td><%= reservation.equipment.name %></td>
+              <td><%= link_to reservation.customer_name, reservation_path(reservation) %></td>
+              <td><%= l reservation.start_date %></td>
+              <td><%= l reservation.end_date %></td>
+              <td><%= reservation.cancelled? ? "Cancelled" : "Finished" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </details>
+<% end %>

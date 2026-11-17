@@ -148,6 +148,13 @@ class ReservationTest < ActiveSupport::TestCase
     assert_equal reservation.end_date + 2.hours, reservation.blocked_until
   end
 
+  test "only active reservations that have not finished are editable" do
+    assert reservations(:upcoming).editable?
+    assert reservations(:in_progress).editable?
+    assert_not reservations(:finished).editable?
+    assert_not reservations(:cancelled).editable?
+  end
+
   # editing rules
 
   test "upcoming reservation can be changed" do

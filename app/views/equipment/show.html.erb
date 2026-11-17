@@ -29,7 +29,7 @@
         <tbody>
           <% @upcoming.each do |reservation| %>
             <tr id="reservation_<%= reservation.public_id %>">
-              <td><%= l reservation.start_date %></td>
+              <td><%= link_to l(reservation.start_date), reservation_path(reservation) %></td>
               <td><%= l reservation.end_date %></td>
               <td><%= l reservation.blocked_until %></td>
             </tr>
@@ -57,7 +57,7 @@
         <tbody>
           <% @past.each do |reservation| %>
             <tr id="reservation_<%= reservation.public_id %>">
-              <td><%= l reservation.start_date %></td>
+              <td><%= link_to l(reservation.start_date), reservation_path(reservation) %></td>
               <td><%= l reservation.end_date %></td>
               <td><%= reservation.cancelled? ? "Cancelled" : "Finished" %></td>
             </tr>

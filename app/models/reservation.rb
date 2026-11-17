@@ -39,6 +39,11 @@ class Reservation < ApplicationRecord
     persisted? && end_date_in_database <= Time.current
   end
 
+  # Whether the customer may still edit or cancel it.
+  def editable?
+    status_in_database == "active" && !finished?
+  end
+
   private
     def end_after_start_within_duration_limits
       return if start_date.blank? || end_date.blank?
