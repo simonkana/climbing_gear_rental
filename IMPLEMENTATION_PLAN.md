@@ -270,7 +270,7 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
   - `feat: add Reservation model with time window validations` (migration, model, status enum, field/time validations, fixtures, tests; also `Equipment has_many :reservations, dependent: :restrict_with_error`, deferred from Phase 2)
   - `feat: restrict editing of started, finished and cancelled reservations` (edit rules, immutable equipment, tests)
 
-- [ ] **Phase 4: CapacityTimeline** (25 min) → §4.3, §9.1, test-first
+- [x] **Phase 4: CapacityTimeline** (25 min) → §4.3, §9.1, test-first
   - `feat: add sweep-line capacity timeline`
 
 - [ ] **Phase 5: ReservationBooking service** (35 min) → §4.4, §9.3 service part
