@@ -130,6 +130,26 @@ class ReservationsControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href='#reservation_customer_email']"
   end
 
+  test "a single error is shown as a plain human message without a count" do
+    post equipment_reservations_path(equipment(:crashpad)), params: booking_params(customer_email: "nope")
+
+    assert_select ".form-errors" do
+      assert_select "p a[href='#reservation_customer_email']", text: "Email is invalid"
+      assert_select "ul", count: 0
+    end
+    assert_no_match(/prevented|prohibited|error/i, css_select(".form-errors").text)
+  end
+
+  test "several errors are listed with human attribute names" do
+    post equipment_reservations_path(equipment(:crashpad)),
+      params: booking_params(customer_name: "", end_date: "2026-12-05T10:30")
+
+    assert_select ".form-errors li", count: 2
+    assert_select ".form-errors li", text: "Name can't be blank"
+    assert_select ".form-errors li", text: "End must be at least 1 hour after the start"
+    assert_select "#reservation_end_date_error", text: "must be at least 1 hour after the start"
+  end
+
   test "create ignores status, equipment and public_id from params" do
     crashpad = equipment(:crashpad)
     chosen = SecureRandom.uuid_v7

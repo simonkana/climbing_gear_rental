@@ -1,18 +1,19 @@
-<%# Error summary for a form builder `form`; attribute errors link to their field. %>
+<%# Error summary for a form builder `form`: only the human messages, each
+    attribute error linked to its field. One error is a sentence, more a list. %>
 <% errors = form.object.errors %>
 <% if errors.any? %>
+  <% message = ->(error) {
+       error.attribute == :base ? error.full_message : link_to(error.full_message, "##{form.field_id(error.attribute)}")
+     } %>
   <div class="form-errors" role="alert" tabindex="-1">
-    <h2><%= pluralize(errors.count, "error") %> prevented saving</h2>
-    <ul>
-      <% errors.each do |error| %>
-        <li>
-          <% if error.attribute == :base %>
-            <%= error.full_message %>
-          <% else %>
-            <%= link_to error.full_message, "##{form.field_id(error.attribute)}" %>
-          <% end %>
-        </li>
-      <% end %>
-    </ul>
+    <% if errors.one? %>
+      <p><%= message.(errors.first) %></p>
+    <% else %>
+      <ul>
+        <% errors.each do |error| %>
+          <li><%= message.(error) %></li>
+        <% end %>
+      </ul>
+    <% end %>
   </div>
 <% end %>

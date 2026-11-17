@@ -8,8 +8,25 @@ en:
     formats:
       default: "%-d. %-m. %Y %H:%M"
   activerecord:
+    attributes:
+      equipment:
+        turnaround_minutes: "Turnaround"
+      reservation:
+        customer_name: "Name"
+        customer_email: "Email"
+        customer_phone: "Phone"
+        start_date: "Start"
+        end_date: "End"
     errors:
       models:
+        equipment:
+          attributes:
+            capacity:
+              in: "must be between 1 and 100 units"
+              not_an_integer: "must be a whole number"
+            turnaround_minutes:
+              in: "must be between 0 and 1440 minutes"
+              not_an_integer: "must be a whole number of minutes"
         reservation:
           attributes:
             base:

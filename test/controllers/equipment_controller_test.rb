@@ -102,6 +102,14 @@ class EquipmentControllerTest < ActionDispatch::IntegrationTest
     assert_select "#equipment_name_error", text: /can't be blank/
   end
 
+  test "error summary shows only human messages" do
+    post equipment_index_path, params: { equipment: { name: "Helmet", capacity: 5, turnaround_minutes: 2000 } }
+
+    assert_response :unprocessable_content
+    assert_select ".form-errors p", text: "Turnaround must be between 0 and 1440 minutes"
+    assert_no_match(/prevented|prohibited/i, css_select(".form-errors").text)
+  end
+
   test "create ignores a public_id sent in params" do
     chosen = SecureRandom.uuid_v7
 

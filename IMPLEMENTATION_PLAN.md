@@ -314,7 +314,7 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
   - `docs: write README with decisions and algorithm explanation` (may be split per section)
 
 ### Extra phases (requested after Phase 10, see D17, D18)
-- [ ] **Phase 12: Friendlier validation errors** → D18
+- [x] **Phase 12: Friendlier validation errors** → D18
   - `feat: show friendlier validation messages` (error summary without the count heading, human attribute names)
 - [ ] **Phase 13: Equipment images** → D17, §3.1
   - `feat: add optional image URL to equipment` (migration with CHECK, validation, form field, image/placeholder partial)
