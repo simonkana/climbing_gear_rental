@@ -253,7 +253,7 @@ See `AGENTS.md` → Commands. `config/ci.rb` already has the system-test step co
 
 Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one commit step (see `AGENTS.md` → Commits).
 
-- [ ] **Phase 0: Agent setup** (10 min)
+- [x] **Phase 0: Agent setup** (10 min)
   Add `AGENTS.md`, `CLAUDE.md`, `GUARDRAILS.md`, `IMPLEMENTATION_PLAN.md`.
   - `docs: add implementation plan and agent instructions`
 
