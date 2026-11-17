@@ -61,6 +61,8 @@ Authentication and user accounts, payments, emails, admin panel, Equipment edit/
 | D14 | Tests: Minitest + fixtures (Rails default). No RSpec, no FactoryBot, no DatabaseCleaner. |
 | D15 | Language: everything in English (code, comments, UI, validation messages, seeds, commits); only README in Czech. |
 | D16 🧑 | "Nearest available slot" suggestion (Šimon's option A) and `Category` model are bonus phases, done only after the must-have phases are complete. |
+| D17 🧑 | Equipment has an optional `image_url` (https only, max 2048 chars, hotlinked; seeds use freely licensed Wikimedia Commons photos). No file uploads, for simplicity and easy seeding. Without an image a "No image available" placeholder is shown. |
+| D18 🧑 | UI look: "Airbnb-clean": photo-first equipment card grid, rounded cards, soft shadows, one confident accent; still plain CSS, simple, responsive and accessible. Validation errors show only human-friendly messages (no "N errors prevented saving"). |
 
 ---
 
@@ -76,9 +78,10 @@ Authentication and user accounts, payments, emails, admin panel, Equipment edit/
 | `description` | text | nullable |
 | `capacity` | integer | NOT NULL, CHECK `capacity > 0` |
 | `turnaround_minutes` | integer | NOT NULL, default 60, CHECK `turnaround_minutes >= 0` |
+| `image_url` | string(2048) | nullable, CHECK `image_url IS NULL OR image_url LIKE 'https://%'` (D17) |
 | timestamps | | |
 
-Model validations: `name` presence + length ≤ 120; `capacity` integer, 1..100; `turnaround_minutes` integer, 0..1440.
+Model validations: `name` presence + length ≤ 120; `capacity` integer, 1..100; `turnaround_minutes` integer, 0..1440; `image_url` optional, blank normalized to nil, https URL with a host, ≤ 2048.
 Association: `has_many :reservations, dependent: :restrict_with_error`.
 
 ### 3.2 `reservations` table
@@ -197,7 +200,11 @@ Claim for README: as the start moves later, a start can only become feasible whe
 
 ## 7. Styling
 - Propshaft; plain CSS in `app/assets/stylesheets/application.css`, plus at most one more file if it grows. No Tailwind, no Sass, no dark mode.
-- Look: minimal, lots of white space, one accent color, system font stack, cards for equipment, clear tables (inspired by mpb.com).
+- Look (D18, Airbnb-clean): lots of white space, one confident accent color, system font stack, 12px rounded cards with soft shadows.
+  - Equipment index: responsive photo card grid (image 4:3 or placeholder, name, units and free now, availability badge, whole card clickable via a stretched link).
+  - Equipment show: hero image, details and reservations on the left, sticky booking card on the right from 48rem.
+  - Reservations: summary card with status pill; lists as rounded tables with status pills; forms inside a card.
+  - Images: `loading="lazy"`, `referrerpolicy="no-referrer"`, `alt` = equipment name; placeholder is `role="img"` with "No image available".
 - Accessibility: WCAG AA contrast, visible `:focus-visible`, semantic HTML, labels on every input, skip link, `prefers-reduced-motion` respected.
 - Responsive: mobile first, single breakpoint around 48rem; tables scroll horizontally inside a wrapper on small screens.
 
@@ -305,6 +312,17 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
 - [ ] **Phase 11: README** (25 min) → §12
   Written by Šimon (Czech), agent may help with structure and proofreading only.
   - `docs: write README with decisions and algorithm explanation` (may be split per section)
+
+### Extra phases (requested after Phase 10, see D17, D18)
+- [ ] **Phase 12: Friendlier validation errors** → D18
+  - `feat: show friendlier validation messages` (error summary without the count heading, human attribute names)
+- [ ] **Phase 13: Equipment images** → D17, §3.1
+  - `feat: add optional image URL to equipment` (migration with CHECK, validation, form field, image/placeholder partial)
+  - `chore: add Wikimedia Commons images to seeds` (URLs verified to load, licences credited in a seeds comment)
+- [ ] **Phase 14: UI refresh** → D18, §7
+  - `style: refresh design tokens, header and typography`
+  - `style: show equipment as photo cards`
+  - `style: add booking card layout and polish tables, forms and badges`
 
 ### Bonus phases (only after Phase 11)
 - [ ] **B1: Nearest available slot** → §4.5. `feat: suggest nearest available start time`
