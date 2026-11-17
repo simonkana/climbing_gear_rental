@@ -1,0 +1,14 @@
+<%# locals: (free:, capacity:) %>
+<%# One segment per physical unit: free units in rope pink, units in use hatched.
+    Decorative for screen readers; the sentence carries the information.
+    Above 10 units the segments would be too small, so only the text is shown. %>
+<div class="gauge">
+  <% if capacity <= 10 %>
+    <span class="gauge-units" aria-hidden="true">
+      <% capacity.times do |index| %>
+        <span class="gauge-unit<%= " is-free" if index < free %>"></span>
+      <% end %>
+    </span>
+  <% end %>
+  <span class="gauge-text"><strong class="free-now"><%= free %></strong> of <span class="capacity"><%= capacity %></span> free now</span>
+</div>

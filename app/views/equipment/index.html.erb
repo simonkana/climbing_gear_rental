@@ -1,34 +1,34 @@
 <% content_for :title, "Equipment · Climbing Gear Rental" %>
 
-<h1>Equipment</h1>
-
-<p><%= link_to "Add equipment", new_equipment_path, class: "button" %></p>
+<% content_for :hero do %>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-inner">
+      <div>
+        <h1 id="hero-title">Rent climbing gear by the hour.</h1>
+        <p>Ropes, harnesses, belay devices and more. Every return gets an inspection before the next climber.</p>
+      </div>
+      <%= link_to "Add equipment", new_equipment_path, class: "button button-secondary" %>
+    </div>
+  </section>
+<% end %>
 
 <% if @equipment.any? %>
-  <div class="table-wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th scope="col"><span class="visually-hidden">Photo</span></th>
-          <th scope="col">Name</th>
-          <th scope="col">Capacity</th>
-          <th scope="col">Free now</th>
-          <th scope="col">Turnaround</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @equipment.each do |item| %>
-          <tr id="equipment_<%= item.public_id %>">
-            <td class="thumbnail-cell"><%= render "equipment/image", equipment: item %></td>
-            <td><%= link_to item.name, equipment_path(item) %></td>
-            <td class="capacity"><%= item.capacity %></td>
-            <td class="free-now"><%= item.units_free_at %></td>
-            <td><%= item.turnaround_minutes %> min</td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
+  <ul class="gear-grid" role="list">
+    <% @equipment.each do |item| %>
+      <li>
+        <article class="gear-card" id="equipment_<%= item.public_id %>">
+          <%= render "equipment/image", equipment: item %>
+          <div class="gear-card-body">
+            <h2 class="gear-card-title">
+              <%= link_to item.name, equipment_path(item), class: "stretched-link" %>
+            </h2>
+            <%= render "equipment/gauge", free: item.units_free_at, capacity: item.capacity %>
+            <p class="hint"><%= turnaround_note(item.turnaround_minutes) %></p>
+          </div>
+        </article>
+      </li>
+    <% end %>
+  </ul>
 <% else %>
-  <p>No equipment yet.</p>
+  <p>No gear yet. <%= link_to "Add the first piece", new_equipment_path %>.</p>
 <% end %>

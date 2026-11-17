@@ -4,6 +4,14 @@ module ApplicationHelper
     link_to label, path, aria: { current: ("page" if controller_name == section) }
   end
 
+  # The inspection break after each return, in words: "2 h inspection after each return".
+  def turnaround_note(minutes)
+    return "Ready again right after return" if minutes.zero?
+
+    duration = (minutes % 60).zero? ? "#{minutes / 60} h" : "#{minutes} min"
+    "#{duration} inspection after each return"
+  end
+
   # ARIA attributes that mark an invalid field and point to its inline message.
   def field_error_attributes(form, attribute)
     return {} unless form.object.errors.include?(attribute)

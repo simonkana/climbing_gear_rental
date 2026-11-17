@@ -188,12 +188,6 @@ tbody tr:hover {
   background: var(--chalk);
 }
 
-td.capacity,
-td.free-now {
-  text-align: end;
-  font-variant-numeric: tabular-nums;
-}
-
 /* Key facts (equipment and reservation details) */
 
 .facts {
@@ -267,22 +261,107 @@ summary {
   text-align: center;
 }
 
-.thumbnail-cell .equipment-image {
-  width: 4rem;
+/* Equipment cards (index): photo, name, unit gauge. The name link is
+   stretched over the whole card, so the card has a single link target. */
+
+.gear-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: var(--space-4);
   margin: 0;
-  border-radius: var(--radius);
+  padding: 0;
+  list-style: none;
 }
 
-.thumbnail-cell .image-placeholder {
-  font-size: 0.625rem;
-  line-height: 1.2;
-}
-
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
+.gear-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+  border: var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  transition: transform 120ms ease, box-shadow 120ms ease;
 }
+
+.gear-card:hover,
+.gear-card:focus-within {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--ink);
+}
+
+.gear-card:focus-within {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.gear-card .equipment-image {
+  max-width: none;
+  margin: 0;
+  border: 0;
+  border-block-end: var(--border);
+  border-radius: 0;
+}
+
+.gear-card-body {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+.gear-card-title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.stretched-link {
+  text-decoration: none;
+}
+
+.stretched-link:focus-visible {
+  outline: none; /* the whole card shows the focus ring instead */
+}
+
+.stretched-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+/* Availability gauge: one segment per physical unit */
+
+.gauge {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+
+.gauge-units {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.gauge-unit {
+  width: 1.5rem;
+  height: 1rem;
+  border: var(--border);
+  border-radius: 0.3rem;
+  /* in use: hatched, readable without colour */
+  background: repeating-linear-gradient(-45deg, var(--ink) 0 2px, var(--paper) 2px 6px);
+}
+
+.gauge-unit.is-free {
+  background: var(--rope-pink);
+}
+
+.gauge-text {
+  font-weight: 600;
+}
+
+.gauge-text strong {
+  font-weight: 800;
+}
+

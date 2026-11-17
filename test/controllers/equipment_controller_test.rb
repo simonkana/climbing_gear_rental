@@ -10,7 +10,7 @@ class EquipmentControllerTest < ActionDispatch::IntegrationTest
     assert_select "a.skip-link[href='#main']"
     assert_select "header a[href='#{root_path}']", text: "Climbing Gear Rental"
     assert_select "nav[aria-label='Main'] a[href='#{equipment_index_path}']", text: "Equipment"
-    assert_select "main#main h1", text: "Equipment"
+    assert_select "main#main h1", text: "Rent climbing gear by the hour."
     assert_select ".flash", count: 0
   end
 
@@ -36,12 +36,54 @@ class EquipmentControllerTest < ActionDispatch::IntegrationTest
     get equipment_index_path
 
     assert_response :success
-    assert_select "tr#equipment_#{equipment(:rope).public_id}" do
+    assert_select "#equipment_#{equipment(:rope).public_id}" do
       assert_select "a[href='#{equipment_path(equipment(:rope))}']", text: "Rope 60 m"
-      assert_select "td.capacity", text: "3"
-      assert_select "td.free-now", text: "2" # one reservation in progress
+      assert_select ".capacity", text: "3"
+      assert_select ".free-now", text: "2" # one reservation in progress
     end
-    assert_select "tr#equipment_#{equipment(:crashpad).public_id} td.free-now", text: "1"
+    assert_select "#equipment_#{equipment(:crashpad).public_id} .free-now", text: "1"
+  end
+
+  test "each card shows a unit gauge with free units and the turnaround" do
+    get equipment_index_path
+
+    assert_select "#equipment_#{equipment(:rope).public_id}" do
+      assert_select ".gauge-units[aria-hidden='true'] .gauge-unit", count: 3
+      assert_select ".gauge-unit.is-free", count: 2
+      assert_select ".gauge-text", text: "2 of 3 free now"
+      assert_select ".hint", text: "2 h inspection after each return"
+    end
+    assert_select "#equipment_#{equipment(:crashpad).public_id} .hint", text: "1 h inspection after each return"
+  end
+
+  test "large capacities show the free units as text only" do
+    big = Equipment.create!(name: "Carabiner", capacity: 40, turnaround_minutes: 30)
+
+    get equipment_index_path
+
+    assert_select "#equipment_#{big.public_id}" do
+      assert_select ".gauge-units", count: 0
+      assert_select ".gauge-text", text: "40 of 40 free now"
+      assert_select ".hint", text: "30 min inspection after each return"
+    end
+  end
+
+  test "gear without a turnaround says it is ready right after return" do
+    chalk_bag = Equipment.create!(name: "Chalk bag", capacity: 6, turnaround_minutes: 0)
+
+    get equipment_index_path
+
+    assert_select "#equipment_#{chalk_bag.public_id} .hint", text: "Ready again right after return"
+  end
+
+  test "index without equipment invites adding the first piece" do
+    Reservation.delete_all
+    Equipment.delete_all
+
+    get equipment_index_path
+
+    assert_select "p", text: /No gear yet/
+    assert_select "a[href='#{new_equipment_path}']", text: "Add the first piece"
   end
 
   test "show is addressed by public_id and splits upcoming from past and cancelled reservations" do

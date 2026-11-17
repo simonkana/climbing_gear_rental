@@ -51,8 +51,11 @@
     </header>
 
     <main id="main">
-      <%= render "layouts/flash" %>
-      <%= yield %>
+      <%= yield :hero %>
+      <div class="page">
+        <%= render "layouts/flash" %>
+        <%= yield %>
+      </div>
     </main>
 
     <footer class="site-footer">
