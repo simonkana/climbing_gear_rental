@@ -1,6 +1,7 @@
 <% content_for :title, "#{@equipment.name} · Climbing Gear Rental" %>
 
 <h1><%= @equipment.name %></h1>
+<%= render "equipment/image", equipment: @equipment %>
 <% if @equipment.description.present? %>
   <p><%= @equipment.description %></p>
 <% end %>

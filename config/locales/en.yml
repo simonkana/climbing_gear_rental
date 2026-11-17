@@ -11,6 +11,7 @@ en:
     attributes:
       equipment:
         turnaround_minutes: "Turnaround"
+        image_url: "Image URL"
       reservation:
         customer_name: "Name"
         customer_email: "Email"
@@ -27,6 +28,8 @@ en:
             turnaround_minutes:
               in: "must be between 0 and 1440 minutes"
               not_an_integer: "must be a whole number of minutes"
+            image_url:
+              not_https_url: "must be an https:// link to an image"
         reservation:
           attributes:
             base:

@@ -92,6 +92,34 @@ class EquipmentTest < ActiveSupport::TestCase
     assert_not build_equipment(turnaround_minutes: 30.5).valid?
   end
 
+  # image_url
+
+  test "image url is optional and blank becomes nil" do
+    item = build_equipment(image_url: "   ")
+
+    assert item.valid?
+    assert_nil item.image_url
+  end
+
+  test "accepts an https image url" do
+    assert build_equipment(image_url: "https://upload.wikimedia.org/rope.jpg").valid?
+  end
+
+  test "rejects image urls that are not https links" do
+    [ "http://example.com/rope.jpg", "javascript:alert(1)", "data:image/png;base64,AAAA",
+      "not a url", "https://", "//example.com/rope.jpg" ].each do |url|
+      item = build_equipment(image_url: url)
+
+      assert_not item.valid?, url
+      assert item.errors.added?(:image_url, :not_https_url), url
+    end
+  end
+
+  test "limits image url to 2048 characters" do
+    assert build_equipment(image_url: "https://example.com/#{"a" * 2028}").valid?
+    assert_not build_equipment(image_url: "https://example.com/#{"a" * 2029}").valid?
+  end
+
   # units_free_at
 
   test "units free at a moment subtract reservations blocking that moment" do
@@ -139,6 +167,12 @@ class EquipmentTest < ActiveSupport::TestCase
 
   test "database rejects negative turnaround" do
     item = build_unvalidated(turnaround_minutes: -1)
+
+    assert_raises(ActiveRecord::CheckViolation) { item.save(validate: false) }
+  end
+
+  test "database rejects a non-https image url" do
+    item = build_unvalidated(image_url: "http://example.com/rope.jpg")
 
     assert_raises(ActiveRecord::CheckViolation) { item.save(validate: false) }
   end

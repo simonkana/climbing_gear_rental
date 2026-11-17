@@ -1,0 +1,11 @@
+<%# locals: (equipment:) %>
+<%# Hotlinked photo (D17); fixed aspect ratio so the layout does not jump. %>
+<div class="equipment-image">
+  <% if equipment.image_url.present? %>
+    <%= image_tag equipment.image_url, alt: equipment.name, loading: "lazy", decoding: "async", referrerpolicy: "no-referrer" %>
+  <% else %>
+    <div class="image-placeholder" role="img" aria-label="No image available">
+      <span aria-hidden="true">No image available</span>
+    </div>
+  <% end %>
+</div>

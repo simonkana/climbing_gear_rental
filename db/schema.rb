@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_17_064534) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_17_091512) do
   create_table "equipment", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "public_id", limit: 36, null: false, collation: "ascii_bin"
     t.string "name", limit: 120, null: false
@@ -19,7 +19,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_17_064534) do
     t.integer "turnaround_minutes", default: 60, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "image_url", limit: 2048
     t.index ["public_id"], name: "index_equipment_on_public_id", unique: true
+    t.check_constraint "(`image_url` is null) or (`image_url` like _utf8mb4'https://%')", name: "equipment_image_url_https"
     t.check_constraint "`capacity` > 0", name: "equipment_capacity_positive"
     t.check_constraint "`turnaround_minutes` >= 0", name: "equipment_turnaround_non_negative"
   end

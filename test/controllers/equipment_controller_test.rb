@@ -102,6 +102,54 @@ class EquipmentControllerTest < ActionDispatch::IntegrationTest
     assert_select "#equipment_name_error", text: /can't be blank/
   end
 
+  # images
+
+  test "create stores an optional image url" do
+    post equipment_index_path, params: { equipment: {
+      name: "Helmet", capacity: 5, image_url: "https://example.com/helmet.jpg"
+    } }
+
+    assert_equal "https://example.com/helmet.jpg", Equipment.find_by!(name: "Helmet").image_url
+  end
+
+  test "create with an invalid image url re-renders the form" do
+    post equipment_index_path, params: { equipment: { name: "Helmet", capacity: 5, image_url: "http://example.com/a.jpg" } }
+
+    assert_response :unprocessable_content
+    assert_select "#equipment_image_url[aria-invalid='true']"
+    assert_select ".form-errors", text: /Image URL must be an https:\/\/ link to an image/
+  end
+
+  test "equipment with an image shows it with alt text, without one a placeholder" do
+    rope = equipment(:rope)
+    rope.update!(image_url: "https://example.com/rope.jpg")
+
+    get equipment_path(rope)
+    assert_select "img[src='https://example.com/rope.jpg'][alt='Rope 60 m'][loading='lazy'][referrerpolicy='no-referrer']"
+
+    get equipment_path(equipment(:crashpad))
+    assert_select "img", count: 0
+    assert_select ".image-placeholder[role='img'][aria-label='No image available']", text: /No image available/
+  end
+
+  test "index and booking page show the equipment image or placeholder" do
+    equipment(:rope).update!(image_url: "https://example.com/rope.jpg")
+
+    get equipment_index_path
+    assert_select "#equipment_#{equipment(:rope).public_id} img[src='https://example.com/rope.jpg']"
+    assert_select "#equipment_#{equipment(:crashpad).public_id} .image-placeholder"
+
+    get new_equipment_reservation_path(equipment(:rope))
+    assert_select "img[src='https://example.com/rope.jpg']"
+  end
+
+  test "new equipment form has an image url field" do
+    get new_equipment_path
+
+    assert_select "label[for='equipment_image_url']"
+    assert_select "input[type='url']#equipment_image_url"
+  end
+
   test "error summary shows only human messages" do
     post equipment_index_path, params: { equipment: { name: "Helmet", capacity: 5, turnaround_minutes: 2000 } }
 

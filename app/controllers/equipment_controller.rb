@@ -29,6 +29,6 @@ class EquipmentController < ApplicationController
 
   private
     def equipment_params
-      params.expect(equipment: %i[name description capacity turnaround_minutes])
+      params.expect(equipment: %i[name description capacity turnaround_minutes image_url])
     end
 end

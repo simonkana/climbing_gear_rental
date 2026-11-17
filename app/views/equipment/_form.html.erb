@@ -25,6 +25,13 @@
     <%= field_error_message(form, :turnaround_minutes) %>
   </div>
 
+  <div class="field">
+    <%= form.label :image_url, "Image URL (optional)" %>
+    <%= form.url_field :image_url, maxlength: 2048, placeholder: "https://", **field_error_attributes(form, :image_url) %>
+    <p class="hint">A direct https link to a photo. Without one, a placeholder is shown.</p>
+    <%= field_error_message(form, :image_url) %>
+  </div>
+
   <div class="actions">
     <%= form.submit "Create equipment" %>
     <%= link_to "Cancel", equipment_index_path %>
