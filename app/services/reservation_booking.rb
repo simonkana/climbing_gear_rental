@@ -25,6 +25,7 @@ class ReservationBooking
         add_capacity_error(equipment)
         false
       else
+        after_capacity_check
         reservation.save!
       end
     end
@@ -68,6 +69,11 @@ class ReservationBooking
         .map { |start_date, end_date| start_date...(end_date + turnaround) }
 
       CapacityTimeline.peak(window: window, intervals: existing + [ window ]) > equipment.capacity
+    end
+
+    # Test seam (plan §9.4): the concurrency test slows this down to widen the
+    # window between check and write. Intentionally a no-op.
+    def after_capacity_check
     end
 
     def add_capacity_error(equipment)

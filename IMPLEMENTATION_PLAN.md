@@ -243,6 +243,7 @@ Separate file, `self.use_transactional_tests = false`, cleans up its own records
 - Each thread books the same window. Assert: exactly the free number of bookings succeeded, the rest failed with the capacity error, and the DB count of active reservations equals capacity.
 - Make the race deterministic: expose a small seam in the service between the check and the write, and in the test slow it down (e.g. `sleep 0.2`) for all threads. With the lock the result is still correct; without it every thread passes the check.
 - **Mutation check (manual, not committed):** temporarily remove the lock, run the test, confirm it fails, restore. Record the outcome in the README.
+- **Mutation check result (2026-11-17):** with `Equipment.lock.find` replaced by `Equipment.find`, both tests failed: 8 of 8 simultaneous bookings succeeded instead of 1 (capacity 1 → 8 active reservations; capacity 3 with 2 booked → 10). With the lock restored: exactly 1 success and 7 capacity errors in each test. Only the winning thread reaches the delay before the write; the others see its commit and fail fast, so each test takes ≈ 0.3 s.
 
 ### 9.5 Checks
 See `AGENTS.md` → Commands. `config/ci.rb` already has the system-test step commented out (no system tests planned); keep it that way.
@@ -278,7 +279,7 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
   - `feat: support reservation updates in booking service` (exclude self, extension cases, tests)
   - `feat: handle lock timeouts and deadlocks in booking`
 
-- [ ] **Phase 6: Concurrency test** (25 min) → §9.4
+- [x] **Phase 6: Concurrency test** (25 min) → §9.4
   Manual mutation check afterwards; note the result for the README.
   - `test: prove booking is safe under concurrent requests` (seam, race test, test pool size if needed)
 
