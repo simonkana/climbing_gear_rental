@@ -257,7 +257,7 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
   Add `AGENTS.md`, `CLAUDE.md`, `GUARDRAILS.md`, `IMPLEMENTATION_PLAN.md`.
   - `docs: add implementation plan and agent instructions`
 
-- [ ] **Phase 1: Time zone, formats, base layout** (15 min) → §6, §5.3 layout
+- [x] **Phase 1: Time zone, formats, base layout** (15 min) → §6, §5.3 layout
   Accept: app boots, `I18n.l(Time.current)` prints `17. 11. 2026 14:30` style in Prague time.
   - `chore: set Prague time zone and Czech date/time formats` (application.rb, en.yml)
   - `feat: add base layout with navigation and flash messages` (layout, flash partial, stylesheet stub, root placeholder)
@@ -283,7 +283,7 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
   - `test: prove booking is safe under concurrent requests` (seam, race test, test pool size if needed)
 
 - [ ] **Phase 7: Equipment UI** (25 min) → §5
-  - `feat: add equipment index and detail pages` (routes, controller, views, controller tests)
+  - `feat: add equipment index and detail pages` (routes, controller, views, controller tests; root → `equipment#index`, remove the Phase 1 `HomeController` placeholder and its test)
   - `feat: add equipment creation form`
 
 - [ ] **Phase 8: Reservation UI** (35 min) → §5

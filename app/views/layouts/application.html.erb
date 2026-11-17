@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title><%= content_for(:title) || "Climbing Gear Rental" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -24,6 +24,22 @@
   </head>
 
   <body>
-    <%= yield %>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <%= link_to "Climbing Gear Rental", root_path, class: "site-logo" %>
+      <nav aria-label="Main">
+        <%= link_to "Equipment", root_path %>
+      </nav>
+    </header>
+
+    <main id="main">
+      <%= render "layouts/flash" %>
+      <%= yield %>
+    </main>
+
+    <footer class="site-footer">
+      <p>Climbing Gear Rental &middot; all times in Prague time</p>
+    </footer>
   </body>
 </html>
