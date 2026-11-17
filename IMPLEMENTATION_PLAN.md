@@ -293,7 +293,7 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
   - `feat: add reservation editing` (edit/update via the service)
   - `feat: add reservation cancellation`
 
-- [ ] **Phase 9: Styling** (25 min) → §7
+- [x] **Phase 9: Styling** (25 min) → §7
   - `style: add base styles and layout`
   - `style: style equipment and reservation pages`
 

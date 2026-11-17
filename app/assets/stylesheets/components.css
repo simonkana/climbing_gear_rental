@@ -1,0 +1,217 @@
+/*
+ * Components: tables, definition lists, buttons, forms, error summary.
+ * Uses the tokens defined in application.css.
+ */
+
+/* Tables: scroll horizontally on small screens instead of overflowing */
+
+.table-wrapper {
+  overflow-x: auto;
+  margin-block-end: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+th,
+td {
+  padding: var(--space-2) var(--space-3);
+  text-align: start;
+  white-space: nowrap;
+  border-block-end: 1px solid var(--color-border);
+}
+
+thead th {
+  background: var(--color-surface);
+  color: var(--color-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+tbody tr:last-child td {
+  border-block-end: 0;
+}
+
+td.capacity,
+td.free-now {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Key facts (equipment and reservation details) */
+
+.facts {
+  display: grid;
+  gap: var(--space-1) var(--space-4);
+  margin-block-end: var(--space-4);
+}
+
+.facts dt {
+  color: var(--color-muted);
+  font-size: 0.875rem;
+}
+
+.facts dd {
+  margin-block-end: var(--space-2);
+}
+
+@media (min-width: 48rem) {
+  .facts {
+    grid-template-columns: max-content 1fr;
+  }
+
+  .facts dd {
+    margin-block-end: 0;
+  }
+}
+
+.hint {
+  color: var(--color-muted);
+  font-size: 0.875rem;
+}
+
+/* Buttons: links styled as buttons, button_to forms and submit inputs */
+
+.button,
+input[type="submit"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem; /* 44px touch target */
+  padding: var(--space-2) var(--space-4);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius);
+  background: var(--color-accent);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:hover,
+input[type="submit"]:hover {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+  color: #ffffff;
+}
+
+.button-danger {
+  background: var(--color-bg);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.button-danger:hover {
+  background: var(--color-error-bg);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.button_to {
+  display: inline;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block: var(--space-4);
+}
+
+/* Forms */
+
+form {
+  max-width: 32rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-block-end: var(--space-3);
+}
+
+.field label {
+  font-weight: 600;
+}
+
+/* Rails wraps invalid fields in a div; keep the layout unchanged. */
+.field_with_errors {
+  display: contents;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="datetime-local"],
+textarea {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: var(--space-2);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font: inherit;
+}
+
+input:disabled {
+  background: var(--color-surface);
+  color: var(--color-muted);
+}
+
+[aria-invalid="true"] {
+  border: 2px solid var(--color-danger);
+}
+
+.field-error {
+  color: var(--color-danger);
+  font-size: 0.875rem;
+}
+
+/* Error summary at the top of a form */
+
+.form-errors {
+  margin-block-end: var(--space-4);
+  padding: var(--space-3);
+  border: 2px solid var(--color-danger);
+  border-radius: var(--radius);
+  background: var(--color-error-bg);
+}
+
+.form-errors h2 {
+  margin: 0 0 var(--space-2);
+  font-size: 1rem;
+  color: var(--color-danger);
+}
+
+.form-errors ul {
+  margin: 0;
+  padding-inline-start: var(--space-4);
+}
+
+.form-errors a {
+  color: var(--color-text);
+}
+
+/* Collapsible past reservations */
+
+details {
+  margin-block: var(--space-4);
+}
+
+summary {
+  cursor: pointer;
+  font-weight: 600;
+  margin-block-end: var(--space-3);
+}
