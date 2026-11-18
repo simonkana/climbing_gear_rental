@@ -315,8 +315,8 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
   - `chore: add seed equipment`
   - `chore: add near-capacity seed scenarios`
 
-- [ ] **Phase 11: README** (25 min) → §12
-  Written by Šimon (Czech), agent may help with structure and proofreading only.
+- [x] **Phase 11: README** (25 min) → §12
+  Written by Šimon (Czech), agent may help with structure and proofreading only. On Šimon's request the agent also fact-checked his draft against the code, tightened the wording and added the setup instructions.
   - `docs: write README with decisions and algorithm explanation` (may be split per section)
 
 ### Extra phases (requested after Phase 10, see D17, D18)
@@ -353,10 +353,12 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
 ---
 
 ## 12. README outline (Czech, written by Šimon)
-1. **Téma** – půjčovna lezeckého vybavení, proč (turnaround na kontrolu lan a úvazků).
-2. **Jak spustit** – požadavky, `bin/rails db:setup`, scénáře S1–S6 k vyzkoušení.
-3. **DECISIONS** – modely a dual ID, polootevřené intervaly a turnaround, umístění logiky (service + PORO), zámek na řádku vybavení a proč ne zámek rozsahu, proč se nemění vybavení při update, cancel místo destroy, čas a lokalizace.
-4. **Proč algoritmus funguje** (2–3 věty) – zámek serializuje zápisy pro dané vybavení a snapshot vzniká až po jeho získání; sweep line počítá skutečné maximum souběžných výpůjček v okně nové rezervace, takže nepřijme rezervaci, která by kapacitu v kterémkoli okamžiku překročila, a neodmítne tu, která ji nepřekročí.
-5. **Testy** – co pokrývají, jak concurrency test dokazuje správnost, výsledek mutační kontroly.
-6. **Práce s AI** – jak byly použity Claude Code a Antigravity, co bylo rozhodnuto ručně (§2), jak byl výstup kontrolován.
-7. **Co bych udělal jinak s více časem** – uživatelé a autentizace, BINARY(16) UUID, množství v rezervaci, sledování konkrétních kusů, ochrana proti snížení kapacity pod existující obsazenost, kalendářní UI, rate limiting.
+Final structure follows the four README points of the assignment, then the extras (revised in Phase 11 from the original 7-section outline):
+1. **Zvolené téma** – půjčovna lezeckého vybavení.
+2. **Decisions** – modely a dual ID, turnaround, čas a lokalizace, umístění logiky (service + PORO), proč kontrola kapacity není validace modelu, kontrolery, cancel místo destroy, proč se nemění vybavení při update.
+3. **Proč algoritmus kontroly kapacity funguje** – úvodní 2–3 věty (zámek serializuje zápisy pro dané vybavení a snapshot vzniká až po jeho získání; sweep line počítá skutečné maximum souběžných výpůjček v okně nové rezervace), pak popis sweep line, protipříklad k prostému počítání překryvů (S4), složitost a zámek.
+4. **Co bych udělal jinak s více časem** – uživatelé a autentizace, veřejný seznam rezervací, množství v rezervaci, editace vybavení s ochranou kapacity, Active Storage, BINARY(16) UUID, rate limiting, nasazení.
+5. **Testy** – co pokrývají, jak concurrency test dokazuje správnost.
+6. **Práce s AI** – použit jen Claude Code, co bylo rozhodnuto ručně (§2), jak byl výstup kontrolován.
+7. **Lokální spuštění a testy** – požadavky, MySQL uživatel a práva, `bin/rails db:setup`, scénáře S1–S6, testovací příkazy.
+8. **Zdroje** – licence fotek a fontu.
