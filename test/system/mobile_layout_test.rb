@@ -31,6 +31,14 @@ class MobileLayoutTest < ApplicationSystemTestCase
     assert_operator toggle["right"], :>, WIDTH - 40, "menu button should sit at the right edge"
   end
 
+  # Waits (with Capybara's retry timeout) until no CSS transition is running.
+  def wait_for_animations
+    page.document.synchronize do
+      running = page.evaluate_script("document.getAnimations().length")
+      raise Capybara::ExpectationNotMet, "#{running} animations still running" unless running.zero?
+    end
+  end
+
   test "menu opens, closes with Escape and navigates" do
     visit equipment_index_path
     assert_no_link "Reservations" # closed: hidden from view and from assistive technology
@@ -45,6 +53,7 @@ class MobileLayoutTest < ApplicationSystemTestCase
     assert page.evaluate_script("document.activeElement.classList.contains('menu-toggle')"), "focus returns to the button"
 
     click_button "Menu"
+    wait_for_animations # the link slides in; clicking mid-transition can miss it
     click_link "Reservations"
     assert_current_path reservations_path
     assert_selector "button.menu-toggle[aria-expanded='false']" # a new page starts closed
