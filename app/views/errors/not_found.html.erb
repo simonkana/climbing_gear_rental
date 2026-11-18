@@ -1,0 +1,13 @@
+<% content_for :title, "Page not found · Climbing Gear Rental" %>
+
+<h1>Page not found</h1>
+
+<p class="lead">
+  We couldn't find what you were looking for. The link may be mistyped,
+  or the equipment or reservation no longer exists.
+</p>
+
+<div class="actions">
+  <%= link_to "Browse equipment", equipment_index_path, class: "button" %>
+  <%= link_to "View reservations", reservations_path, class: "button button-secondary" %>
+</div>

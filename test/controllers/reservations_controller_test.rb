@@ -74,6 +74,15 @@ class ReservationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  test "unknown public_id shows the not found page in the app layout" do
+    get reservation_path(id: SecureRandom.uuid_v7)
+
+    assert_response :not_found
+    assert_select "h1", "Page not found"
+    assert_select "nav#main-nav"
+    assert_select "a[href=?]", equipment_index_path, text: "Browse equipment"
+  end
+
   test "numeric id does not resolve" do
     get reservation_path(id: reservations(:upcoming).id)
 
