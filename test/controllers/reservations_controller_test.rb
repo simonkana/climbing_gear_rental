@@ -172,6 +172,14 @@ class ReservationsControllerTest < ActionDispatch::IntegrationTest
     assert_select "#reservation_end_date_error", text: "must be at least 1 hour after the start"
   end
 
+  test "dates beyond the booking horizon are a form error, not a server error" do
+    post equipment_reservations_path(equipment(:crashpad)),
+      params: booking_params(start_date: "9999-12-31T10:00", end_date: "10000-01-02T12:00")
+
+    assert_response :unprocessable_content
+    assert_select ".form-errors", text: /Start can be at most 1 year ahead/
+  end
+
   test "create ignores status, equipment and public_id from params" do
     crashpad = equipment(:crashpad)
     chosen = SecureRandom.uuid_v7

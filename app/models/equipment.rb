@@ -3,7 +3,10 @@ class Equipment < ApplicationRecord
 
   has_many :reservations, dependent: :restrict_with_error
 
+  normalizes :name, with: ->(name) { name.strip }
+
   validates :name, presence: true, length: { maximum: 120 }
+  validates :description, length: { maximum: 2000 }
   validates :capacity, numericality: { only_integer: true, in: 1..100 }
   validates :turnaround_minutes, numericality: { only_integer: true, in: 0..1440 }
 

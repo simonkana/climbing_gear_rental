@@ -6,10 +6,14 @@ class Reservation < ApplicationRecord
   TIME_STEP = 15.minutes
   MIN_DURATION = 1.hour
   MAX_DURATION = 30.days
+  BOOKING_HORIZON = 1.year
 
   belongs_to :equipment
   # Moving a reservation to other equipment would need two equipment locks (D11).
   attr_readonly :equipment_id
+
+  normalizes :customer_name, :customer_email, with: ->(value) { value.strip }
+  normalizes :customer_phone, with: ->(value) { value.strip.presence }
 
   enum :status, { active: "active", cancelled: "cancelled" }, default: :active, validate: true
 
@@ -21,7 +25,8 @@ class Reservation < ApplicationRecord
 
   validate :end_after_start_within_duration_limits
   validate :times_on_time_step
-  validate :start_in_future, if: -> { new_record? || (will_save_change_to_start_date? && !started?) }
+  validate :start_in_future_within_horizon, if: -> { new_record? || (will_save_change_to_start_date? && !started?) }
+  validate :end_in_future, on: :update, if: :will_save_change_to_end_date?
   validate :editable, on: :update
   validate :start_unchanged_once_started, on: :update
 
@@ -76,10 +81,22 @@ class Reservation < ApplicationRecord
       end
     end
 
-    def start_in_future
+    # The horizon also keeps dates inside the range MySQL DATETIME can store.
+    def start_in_future_within_horizon
       return if start_date.blank?
 
-      errors.add(:start_date, :not_in_future) unless start_date > Time.current
+      if start_date <= Time.current
+        errors.add(:start_date, :not_in_future)
+      elsif start_date > Time.current + BOOKING_HORIZON
+        errors.add(:start_date, :too_far_ahead)
+      end
+    end
+
+    # A shortened end must not finish the reservation in the past.
+    def end_in_future
+      return if end_date.blank?
+
+      errors.add(:end_date, :not_in_future) unless end_date > Time.current
     end
 
     def editable

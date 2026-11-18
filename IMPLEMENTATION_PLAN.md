@@ -81,7 +81,7 @@ Authentication and user accounts, payments, emails, admin panel, Equipment edit/
 | `image_url` | string(2048) | nullable, CHECK `image_url IS NULL OR image_url LIKE 'https://%'` (D17) |
 | timestamps | | |
 
-Model validations: `name` presence + length ≤ 120; `capacity` integer, 1..100; `turnaround_minutes` integer, 0..1440; `image_url` optional, blank normalized to nil, https URL with a host, ≤ 2048.
+Model validations: `name` presence + length ≤ 120 (surrounding whitespace stripped); `description` ≤ 2000; `capacity` integer, 1..100; `turnaround_minutes` integer, 0..1440; `image_url` optional, blank normalized to nil, https URL with a host, ≤ 2048.
 Association: `has_many :reservations, dependent: :restrict_with_error`.
 
 ### 3.2 `reservations` table
@@ -105,7 +105,9 @@ Column names `start_date`/`end_date` follow the assignment even though they hold
 Model validations:
 - presence of all NOT NULL fields; `customer_email` format via `URI::MailTo::EMAIL_REGEXP`
 - `end_date > start_date`; duration ≥ 1 h and ≤ 30 days; both times on a 15-minute boundary
-- `start_date` in the future on create, and on update only if `start_date` changed
+- `start_date` in the future and at most 1 year ahead on create, and on update only if `start_date` changed (the horizon also keeps dates within MySQL `DATETIME` range)
+- a changed `end_date` must be in the future (an in-progress reservation cannot be shortened into the past)
+- customer fields are stripped of surrounding whitespace; a blank phone is stored as `NULL`
 - an already finished or cancelled reservation is not editable
 - once a reservation has started, `start_date` cannot change (extension of `end_date` is allowed)
 - `equipment_id` cannot change after create (D11)

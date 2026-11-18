@@ -54,6 +54,14 @@ class ReservationTest < ActiveSupport::TestCase
     assert_not build_reservation(customer_phone: "1" * 31).valid?
   end
 
+  test "strips surrounding whitespace from customer fields" do
+    reservation = build_reservation(customer_name: " Tommy ", customer_email: " tommy@example.com ", customer_phone: "  ")
+    reservation.valid?
+
+    assert_equal [ "Tommy", "tommy@example.com", nil ],
+      [ reservation.customer_name, reservation.customer_email, reservation.customer_phone ]
+  end
+
   # status
 
   test "status defaults to active" do
@@ -123,6 +131,22 @@ class ReservationTest < ActiveSupport::TestCase
     assert past.errors.added?(:start_date, :not_in_future)
 
     assert_not build_reservation(start_date: NOW, end_date: NOW + 2.hours).valid?
+  end
+
+  test "start can be at most one year ahead" do
+    assert build_reservation(start_date: NOW + 1.year, end_date: NOW + 1.year + 2.hours).valid?
+
+    too_far = build_reservation(start_date: NOW + 1.year + 15.minutes, end_date: NOW + 1.year + 2.hours)
+    assert_not too_far.valid?
+    assert too_far.errors.added?(:start_date, :too_far_ahead)
+  end
+
+  test "a changed end must stay in the future" do
+    reservation = reservations(:in_progress) # 07:00-13:00 Prague, now 08:00
+    reservation.end_date = NOW
+
+    assert_not reservation.valid?
+    assert reservation.errors.added?(:end_date, :not_in_future)
   end
 
   test "unchanged past start does not block an update" do

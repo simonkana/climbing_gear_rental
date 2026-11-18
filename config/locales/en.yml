@@ -24,9 +24,11 @@ en:
           attributes:
             capacity:
               in: "must be between 1 and 100 units"
+              not_a_number: "must be a whole number"
               not_an_integer: "must be a whole number"
             turnaround_minutes:
               in: "must be between 0 and 1440 minutes"
+              not_a_number: "must be a whole number of minutes"
               not_an_integer: "must be a whole number of minutes"
             image_url:
               not_https_url: "must be an https:// link to an image"
@@ -39,9 +41,11 @@ en:
             start_date:
               already_started: "cannot be changed once the reservation has started"
               not_in_future: "must be in the future"
+              too_far_ahead: "can be at most 1 year ahead"
               not_on_time_step: "must be on a 15-minute step (:00, :15, :30 or :45)"
             end_date:
               not_after_start: "must be after the start"
+              not_in_future: "must be in the future"
               duration_too_short: "must be at least 1 hour after the start"
               duration_too_long: "must be at most 30 days after the start"
               not_on_time_step: "must be on a 15-minute step (:00, :15, :30 or :45)"

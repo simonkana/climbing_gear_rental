@@ -58,6 +58,23 @@ class EquipmentTest < ActiveSupport::TestCase
     assert_not build_equipment(name: "a" * 121).valid?
   end
 
+  test "strips surrounding whitespace from the name" do
+    assert_equal "Helmet", build_equipment(name: "  Helmet \n").tap(&:valid?).name
+  end
+
+  test "limits description to 2000 characters" do
+    assert build_equipment(description: "a" * 2000).valid?
+    assert_not build_equipment(description: "a" * 2001).valid?
+  end
+
+  test "non-numeric capacity and turnaround get friendly messages" do
+    item = build_equipment(capacity: "abc", turnaround_minutes: "")
+    item.valid?
+
+    assert_equal [ "Capacity must be a whole number" ], item.errors.full_messages_for(:capacity)
+    assert_equal [ "Turnaround must be a whole number of minutes" ], item.errors.full_messages_for(:turnaround_minutes)
+  end
+
   # capacity
 
   test "requires a capacity" do
