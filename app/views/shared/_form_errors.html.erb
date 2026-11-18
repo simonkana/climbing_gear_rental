@@ -1,9 +1,13 @@
 <%# Error summary for a form builder `form`: only the human messages, each
-    attribute error linked to its field. One error is a sentence, more a list. %>
+    attribute error linked to its field. One error is a sentence, more a list.
+    The links skip Turbo: on a form re-rendered after a failed submit, Turbo
+    treats them as a visit and loads a fresh, empty form instead of jumping to
+    the field. A native fragment jump keeps the typed values. %>
 <% errors = form.object.errors %>
 <% if errors.any? %>
   <% message = ->(error) {
-       error.attribute == :base ? error.full_message : link_to(error.full_message, "##{form.field_id(error.attribute)}")
+       error.attribute == :base ? error.full_message :
+         link_to(error.full_message, "##{form.field_id(error.attribute)}", data: { turbo: false })
      } %>
   <div class="form-errors" role="alert" tabindex="-1">
     <% if errors.one? %>

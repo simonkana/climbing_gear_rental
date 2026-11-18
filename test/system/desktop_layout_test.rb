@@ -70,4 +70,22 @@ class DesktopLayoutTest < ApplicationSystemTestCase
     assert_selector ".form-errors[role='alert']", text: "all 3 units are taken"
     assert_selector "h1", text: "Book Rope 60 m"
   end
+
+  test "an error link jumps to its field without clearing the form" do
+    visit new_equipment_reservation_path(equipment(:crashpad))
+    fill_in "Name", with: "Lynn Hill"
+    fill_in "Email", with: "lynn@example.com"
+    find_field("From").set(Time.zone.local(2026, 11, 30, 10, 0)) # before the travelled-to "now"
+    find_field("To").set(Time.zone.local(2026, 12, 5, 12, 0))
+    click_button "Book"
+
+    error_link = find(".form-errors a", text: /future/)
+    target = error_link[:href].split("#").last
+    error_link.click
+
+    assert_equal target, URI.parse(current_url).fragment
+    assert_field "Name", with: "Lynn Hill"
+    assert_field "Email", with: "lynn@example.com"
+    assert_selector ".form-errors", text: /future/
+  end
 end
