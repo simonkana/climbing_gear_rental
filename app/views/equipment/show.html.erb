@@ -5,7 +5,8 @@
     <h1><%= @equipment.name %></h1>
     <%= render "equipment/image", equipment: @equipment %>
     <% if @equipment.description.present? %>
-      <p class="lead"><%= @equipment.description %></p>
+      <%# Plain text: escape all markup, keep paragraphs and line breaks. %>
+      <%= simple_format h(@equipment.description), class: "lead" %>
     <% end %>
   </div>
 

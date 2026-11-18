@@ -120,6 +120,17 @@ class EquipmentControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "show keeps the line breaks of the description and escapes markup" do
+    rope = equipment(:rope)
+    rope.update!(description: "Dry treated.\n\nRetired after 5 years. <b>Bold</b>")
+
+    get equipment_path(rope)
+
+    assert_select "p.lead", count: 2
+    assert_select "p.lead", text: "Retired after 5 years. <b>Bold</b>"
+    assert_select "p.lead b", count: 0
+  end
+
   test "show without reservations says so" do
     get equipment_path(equipment(:crashpad))
 

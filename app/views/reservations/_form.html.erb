@@ -21,8 +21,8 @@
   </div>
 
   <p class="hint">
-    Times are in Prague time, in 15-minute steps. After each rental the unit is blocked for
-    <%= reservation.equipment.turnaround_minutes %> min (inspection and cleaning).
+    Times are in Prague time, in 15-minute steps.
+    <%= turnaround_note(reservation.equipment.turnaround_minutes) %>.
   </p>
 
   <div class="field">

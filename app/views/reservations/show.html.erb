@@ -24,7 +24,7 @@
     <dt>Blocked until</dt>
     <dd>
       <%= l @reservation.blocked_until %>
-      <span class="hint">(the unit is inspected and cleaned for <%= @reservation.equipment.turnaround_minutes %> min after return)</span>
+      <span class="hint">(<%= turnaround_note(@reservation.equipment.turnaround_minutes).downcase_first %>)</span>
     </dd>
   </dl>
 

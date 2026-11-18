@@ -43,6 +43,7 @@ class ReservationsControllerTest < ActionDispatch::IntegrationTest
     assert_select "dd a[href='#{equipment_path(equipment(:rope))}']", text: "Rope 60 m"
     assert_select "dd", text: "2. 12. 2026 10:00"
     assert_select "dd", text: /2\. 12\. 2026 16:00/ # blocked until: 14:00 + 120 min
+    assert_select "dd .hint", text: "(2 h inspection after each return)"
   end
 
   test "statuses are shown as labelled pills" do
@@ -107,6 +108,7 @@ class ReservationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", text: /Crashpad/
     assert_select "form[action='#{equipment_reservations_path(crashpad)}']" do
+      assert_select ".hint", text: /1 h inspection after each return\./ # crashpad: 60 min
       assert_select "input[type='datetime-local'][step='900']#reservation_start_date"
       assert_select "input[type='datetime-local'][step='900']#reservation_end_date"
       %w[customer_name customer_email customer_phone start_date end_date].each do |field|

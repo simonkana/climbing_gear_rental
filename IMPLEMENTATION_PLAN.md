@@ -330,6 +330,11 @@ Estimated total for must-have phases ≈ 4 h. Each bullet under a phase is one c
   - `style: show equipment as photo cards with availability gauge`
   - `style: add booking panel and status badges`
 
+- [x] **Phase 15: Final review and hardening** (requested before submission)
+  - `fix: limit bookings to one year ahead and keep changed ends in the future` (a year-10000 date caused a MySQL error and a 500; description length, whitespace normalisation, friendly "not a number" messages)
+  - `feat: enable a strict content security policy` (self-only scripts, styles and fonts, https images for hotlinked photos, per-response nonce; phone numbers filtered from logs)
+  - `style: polish turnaround wording and description formatting` (0-minute turnaround reads "Ready again right after return", description keeps line breaks, unused `hello_controller.js` removed)
+
 ### Bonus phases (only after Phase 11)
 - [ ] **B1: Nearest available slot** → §4.5. `feat: suggest nearest available start time`
 - [ ] **B2: Category** → §3.4. `feat: add equipment categories with filtering`
