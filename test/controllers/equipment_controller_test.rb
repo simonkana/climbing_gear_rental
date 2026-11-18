@@ -14,6 +14,18 @@ class EquipmentControllerTest < ActionDispatch::IntegrationTest
     assert_select ".flash", count: 0
   end
 
+  test "pages send a strict content security policy with a script nonce" do
+    get root_path
+
+    policy = response.headers["Content-Security-Policy"]
+    assert_match(/default-src 'self'/, policy)
+    assert_match(/img-src 'self' https:/, policy)
+    assert_match(/frame-ancestors 'none'/, policy)
+    nonce = policy[/script-src 'self' 'nonce-([^']+)'/, 1]
+    assert nonce.present?
+    assert_select "script[type='importmap'][nonce='#{nonce}']"
+  end
+
   test "nav marks the current section for assistive technology" do
     get equipment_index_path
     assert_select "nav a[aria-current='page']", text: "Equipment"
