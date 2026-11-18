@@ -17,4 +17,6 @@ Rails.application.routes.draw do
   resources :reservations, only: %i[index show edit update] do
     patch :cancel, on: :member
   end
+
+  # Unmatched paths get a not found page: see config/initializers/not_found_route.rb.
 end

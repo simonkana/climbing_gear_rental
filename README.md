@@ -97,7 +97,7 @@ Seedy vytvoří 7 druhů vybavení a 15 rezervací. Scénáře jsou vždy týden
 - **S6 Helmet**: dvě proběhlé rezervace, které už nejdou upravit.
 
 ```bash
-bin/rails test          # 159 testů (modely, service, kontrolery, seedy, souběh)
+bin/rails test          # 165 testů (modely, service, kontrolery, seedy, souběh)
 bin/rails test:system   # 10 testů v headless Chrome (desktop a mobil 390 px)
 bin/ci                  # RuboCop, bezpečnostní audity, Brakeman, všechny testy a seedy
 ```
